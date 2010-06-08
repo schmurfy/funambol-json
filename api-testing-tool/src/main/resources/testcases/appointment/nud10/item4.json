@@ -1,0 +1,13 @@
+{"data" : {
+        "content-type" : "application/json-appointment",
+        "item" : {
+            "tzid": "America/Mexico_City",
+            "startDate": "20031002T170000Z",
+                      "location": "leiria",
+                        "importance":"0",
+            "allDay":"false"
+           
+
+        }
+    }
+}

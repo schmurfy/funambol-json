@@ -1,0 +1,43 @@
+2010-05-06
+- gasparetto: The fake-backend GUI now set the correct content-type.
+              Fixed the delete and delete all commands.
+
+2010-04-16
+- gasparetto: The server-api dependency clash with the one provided by tomcat,
+              changed the pom.xml.
+              Repository fix for the task item update, fix for the item add (was
+              saved with a wrong sync timestamp).
+              Servlet fix for char encoding on the put method, fix for the item
+              update.
+
+2009-12-02
+- paulo: json fake backend now stores data and authenticates, using foundation
+
+2009-01-26
+- gibi: removed some 'System.out.println'
+
+2009-01-15
+- machi: added the config directory in the connector
+
+2008-12-22
+- machi: added note management
+- machi: improved conversions objects
+
+2008-12-18
+- machi: added documentation about the user web application in the fake backend
+
+2008-12-17
+- machi: fixed some site navigation issues (backend ui application)
+- machi: fixed log configuration file
+- machi: fixed comments
+
+2008-12-16
+- machi: added main menu page
+- machi: added functionality to configure ds server database access
+- machi: added use of since and until parameters
+- machi: added time references
+- machi: added servlet init parameter to enable/disable getConfiguration method
+
+2008-12-11
+- machi: added a first version of a web user interface for fake backend
+

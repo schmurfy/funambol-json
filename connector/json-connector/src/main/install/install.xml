@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+
+<!-- Pick up the environment variables -->
+<project name="Funambol JSON connector" default="install"
+         basedir=".">
+
+    <property environment="ENV"/>
+    
+    <target name="install">
+        <antcall target="install-${ENV.APPSRV}"/>
+        <echo message="Funambol JSON connector successfully completed"/>
+    </target>
+
+    <target name="install-tomcat55">
+        <antcall target="install-tomcat"/>
+    </target>
+
+    <target name="install-tomcat60">
+        <antcall target="install-tomcat"/>
+    </target>
+
+    <target name="install-tomcat">
+        <echo message="Install Funambol JSON connector on Tomcat (${basedir})"/>
+       
+        <delete>
+            <fileset dir="${funambol-home}/modules" includes="json-connector*" excludes="${module}*"/>
+            <fileset dir="${ENV.J2EE_HOME}/webapps/funambol/WEB-INF/lib/" includes="json-connector*" excludes="${module}*"/>
+        </delete>
+
+    </target>
+</project>
+

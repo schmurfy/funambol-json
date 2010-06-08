@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.5.0" class="java.beans.XMLDecoder">
+    <object class="com.funambol.json.security.JsonOfficer">
+        
+        <void property="serverAuth"> 
+            <string>none</string>
+        </void>
+
+        <void property="autoProvisioning">
+            <boolean>false</boolean>
+        </void>
+
+        <void property="customerUserIdEnable">
+            <boolean>false</boolean>
+        </void>
+
+        <void property="customerUserIdLabel">
+            <string>customer_id</string>
+        </void>
+        
+         <!-- Sender -->
+        <void property="defaultSender">
+            <string>com/funambol/server/notification/PushSender.xml</string>
+        </void>
+
+        <void property="deviceSenders">
+            <object class="java.util.LinkedHashMap">
+                <void method="put">
+                 <!-- Windows Mobile -->
+                    <string>fwm-[\p{ASCII}]*</string>
+                    <string>com/funambol/server/notification/WMPushSender.xml</string>
+                </void>
+                <void method="put">
+                 <!-- Java ME BlackBerry client -->
+                    <string>fjm-bb-[\p{ASCII}]*</string>
+                    <string>com/funambol/server/notification/JavaMEBBPushSender.xml</string>
+                </void>
+                <void method="put">
+                 <!-- Java ME client  -->
+                    <string>fjm-[\p{ASCII}]*</string>
+                    <string>com/funambol/server/notification/JavaMEPushSender.xml</string>
+                </void>
+                <void method="put">
+                 <!-- Outlook plugin -->
+                    <string>fol-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!-- iPod V6 plugin -->
+                    <string>fip-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!-- Java GUI V6 plugin -->
+                    <string>fjg-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!-- BlackBerry plugin -->
+                    <string>fbb-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!-- iPhone plugin -->
+                    <string>iph-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!-- iPod Touch plugin -->
+                    <string>ipt-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!-- Mozilla plugin -->
+                    <string>fmz-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!--Old plugin -->
+                    <string>sc-pim-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+            </object>
+        </void>
+
+      <!-- Builder -->
+        <void property="defaultBuilder">
+            <string>com/funambol/server/notification/DS11NotificationBuilder.xml</string>
+        </void>
+
+
+        <void property="deviceBuilders">
+            <object class="java.util.LinkedHashMap">
+                <void method="put">
+                 <!-- Java ME BlackBerry client -->
+                    <string>fjm-bb-[\p{ASCII}]*</string>
+                    <string>com/funambol/server/notification/DSNotificationBuilder.xml</string>
+                </void>
+                <void method="put">
+                 <!-- Java ME client -->
+                    <string>fjm-[\p{ASCII}]*</string>
+                    <string>com/funambol/server/notification/DSNotificationBuilder.xml</string>
+                </void>
+                <void method="put">
+                 <!-- Windows Mobile V6 plugin -->
+                    <string>fwm-[\p{ASCII}]*</string>
+                    <string>com/funambol/server/notification/DSNotificationBuilder.xml</string>
+                </void>
+                <void method="put">
+                 <!-- Outlook V6 plugin -->
+                    <string>fol-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!-- iPod V6 plugin -->
+                    <string>fip-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!-- Java GUI V6 plugin -->
+                    <string>fjg-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!-- BlackBerry plugin -->
+                    <string>fbb-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!-- Mozilla plugin -->
+                    <string>fmz-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!-- Old plugin -->
+                    <string>sc-pim-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!-- iPhone plugin -->
+                    <string>iph-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+                <void method="put">
+                 <!-- iPod Touch plugin -->
+                    <string>ipt-[\p{ASCII}]*</string>
+                    <string></string>
+                </void>
+            </object>
+        </void>
+    </object>
+
+</java>

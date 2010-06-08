@@ -1,0 +1,11 @@
+{"data":{
+        "content-type":"application/json-task",
+        "item":{
+            "subject":"tasknospaces",
+            "body":"thisisbody",
+            "startDate":"20080101",
+            "dueDate":"20090202",
+            "allDay":true
+        }
+    }
+}

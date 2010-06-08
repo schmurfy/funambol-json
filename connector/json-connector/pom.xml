@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>funambol</groupId>
+    <artifactId>json-connector</artifactId>
+    <version>8.7.0-SNAPSHOT</version>
+    <name>Funambol JSON Connector</name>
+    <packaging>s4j</packaging>
+
+    <parent>
+        <groupId>funambol</groupId>
+        <artifactId>funambol</artifactId>
+        <version>8.7.0</version>
+    </parent>
+    
+    <!--
+        DEPENDENCIES
+    -->
+
+    <dependencies>
+
+        <!-- 
+            Internal Dependency
+        -->  
+        <dependency>
+            <groupId>funambol</groupId>
+            <artifactId>json-core</artifactId>
+            <version>8.7.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                   <groupId>funambol</groupId>
+                   <artifactId>server-framework</artifactId>
+                </exclusion>            
+                <exclusion>
+                   <groupId>funambol</groupId>
+                   <artifactId>pim-framework</artifactId>
+                </exclusion>            
+            </exclusions>
+        </dependency>
+
+    </dependencies>
+
+    <scm>
+        <connection>scm:svn:https://guest@svn.funambol.com/svn/funambol-carrier-edition/trunk/modules/json/connector/json-connector</connection>
+        <developerConnection>scm:svn:https://developername@svn.funambol.com/svn/funambol-carrier-edition/trunk/modules/json/connector/json-connector</developerConnection>
+        <url>https://svn.funambol.com/svn/funambol-carrier-edition/trunk/modules/json/connector/json-connector</url>
+  </scm>
+
+    <!--
+        Build plug-ins
+    -->
+    <build>
+        <plugins>            
+
+            <plugin>
+                <groupId>funambol</groupId>
+                <artifactId>funambol-plugin</artifactId>
+                <version>1.0.8</version>
+                <extensions>true</extensions>
+            </plugin>
+            
+        </plugins>
+    </build> 
+
+</project>

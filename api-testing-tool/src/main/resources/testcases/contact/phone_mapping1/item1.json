@@ -1,0 +1,28 @@
+{"data":{
+        "content-type":"application\/json-card",
+        "item":{
+            "firstName":"phoneguy",
+            "lastName":"lastname",
+            "phoneAssistant":"11111111",
+            "phoneBusiness":"22222222",
+            "phoneBusiness2":"333333333",
+            "phonebusinessfax":"444444444",
+            "phoneCallback":"5555555",
+            "phoneCar":"666666666",
+            "phoneCompany":"7777777777",
+            "phoneHome":"88888888888",
+            "phoneHome2":"999999999",
+            "phonehomefax":"211111111111111",
+            "phoneISDN":"2333333333333333",
+            "phoneMobile":"2444444444444444",
+            "phoneOther":"2555555555555",
+            "phoneotherfax":"26666666666666",
+            "phonepager":"277777777777",
+            "phoneprimary":"2888888888888",
+            "phoneradio":"2999999999",
+            "phonetelex":"311111111111",
+            "phonetty_tdd":"322222222222222"            
+
+        }
+    }
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.4.2_05" class="java.beans.XMLDecoder">
+    <object class="com.funambol.json.admin.JsonConnectorConfig">
+        <void property="jsonServerUrl">
+            <string>http://localhost:8080/syncapi</string>
+        </void>
+        <void property="vcardIcalBackend">
+            <boolean>false</boolean>
+        </void>
+        <void property="stopSyncOnFatalError">
+            <boolean>false</boolean>
+        </void>
+    </object>
+</java>

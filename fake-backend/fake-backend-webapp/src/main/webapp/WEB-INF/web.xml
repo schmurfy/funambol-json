@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+
+    <display-name>Funambol JSON API Demo Server</display-name>
+    <description>Funambol JSON API Demo Server</description>
+    <servlet>
+        <servlet-name>JsonServlet</servlet-name>
+        <servlet-class>com.funambol.json.server.JsonServlet</servlet-class>
+        <init-param>
+            <param-name>enableConfiguration</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </servlet>
+    <servlet>
+        <servlet-name>GuiServlet</servlet-name>
+        <servlet-class>com.funambol.json.gui.GuiServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>JsonServlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GuiServlet</servlet-name>
+        <url-pattern>/gui/*</url-pattern>
+    </servlet-mapping>
+</web-app>

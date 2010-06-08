@@ -1,0 +1,24 @@
+{"data":{
+        "content-type":"application\/json-task",
+        "item":{
+            "subject":"lol77",
+            "body":"this is body",
+            "startDate":"2008-01-01 00:00:00",
+            "dueDate":"2009-02-02 00:00:00",
+            "status":"1",
+            "importance":"1",
+            "completed":"0",            
+            "reminder":"1",
+            "reminder_date":"2008-01-02 00:00:00",
+            "details_date_completed":"2016-01-07 00:00:00",
+            "details_total_work":"33",
+            "details_actual_work":"44",
+            "details_mileage":"1000",
+            "details_billing_information":"32000",
+            "details_companies":"cmpa",
+            "contacts":"",
+            "percent_complete":"19.000",
+            "SentReminder":"No"            
+        }
+    }
+}
