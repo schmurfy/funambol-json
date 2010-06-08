@@ -1,0 +1,10 @@
+<!--
+    Context configuration file for the Tomcat Web Demo Client
+-->
+<Context path="/syncapi" docBase="/syncapi" debug="9"
+         privileged="true" verbosity="4">
+
+    <Logger className="org.apache.catalina.logger.FileLogger"
+            prefix="localhost_syncapi_log." suffix=".txt" timestamp="true" />
+
+</Context>

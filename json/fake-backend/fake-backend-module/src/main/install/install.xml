@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<project name="Funambol fake JSON web application" default="install"
+         basedir=".">
+
+    <!-- Pick up the environment variables -->
+    <property environment="ENV"/>
+
+    <!-- =================================================================== -->
+    <!-- install - custom module installation                                -->
+    <!-- =================================================================== -->
+    <target name="install">
+        <antcall target="install-${ENV.APPSRV}"/>
+        <echo message="Fake JSON web application successfully completed"/>
+    </target>
+
+    <target name="install-tomcat55">
+        <antcall target="install-tomcat"/>
+    </target>
+
+    <target name="install-tomcat60">
+        <antcall target="install-tomcat"/>
+    </target>
+
+    <target name="install-tomcat">
+        <echo message="Install Funambol fake JSON web application on Tomcat (${basedir})"/>
+        <echo message="Funambol home: (${funambol-home})"/>
+
+        <mkdir dir="${ENV.J2EE_HOME}/webapps/syncapi"/>
+
+        <copy todir="${ENV.J2EE_HOME}/webapps/syncapi" overwrite="true">
+            <fileset dir="exclude">
+                <include name="*.war"/>
+            </fileset>
+        </copy>
+        <unwar dest="${ENV.J2EE_HOME}/webapps/syncapi/">
+            <fileset dir="${ENV.J2EE_HOME}/webapps/syncapi">
+                <include name="**/*.war"/>
+            </fileset>
+        </unwar>
+        <replace dir="${ENV.J2EE_HOME}/webapps/syncapi/WEB-INF/classes" summary="true">
+            <include name="log4j.properties"/>
+            <replacefilter token="{SYNCSERVER_HOME}" value="${funambol-home}" />
+        </replace>
+        <replaceregexp file="${ENV.J2EE_HOME}/webapps/syncapi/WEB-INF/classes/log4j.properties"
+                       match="\\"
+                       replace="/"
+                       flags="g"/>
+
+</target>
+</project>

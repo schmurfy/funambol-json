@@ -1,0 +1,27 @@
+{"data":{
+        "content-type":"application\/json-card",
+        "item":{
+            "firstName":"Fern\u00e3o",
+            "lastName":"Magalh\u00e3es",
+            
+            "businessAddressStreet":"business street address",
+            "businessAddressCity":"business city address",
+            "businessAddressState":"business state address",
+            "businessAddressCountry":"business country address",
+            "businessAddressPostalCode":"111111",
+           
+            "homeAddressStreet":"home street address",
+            "homeAddressCity":"home city address",
+            "homeAddressState":"home state address",
+            "homeAddressCountry":"home country address",
+            "homeAddressPostalCode":"22222222",
+           
+            "otherAddressStreet":"other street address",
+            "otherAddressCity":"other city address",
+            "otherAddressState":"other state address",
+            "otherAddressCountry":"other country address",
+            "otherAddressPostalCode":"3333333"
+
+        }
+    }
+}

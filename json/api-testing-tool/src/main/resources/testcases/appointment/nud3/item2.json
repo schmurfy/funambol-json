@@ -1,0 +1,12 @@
+{"data":{
+        "content-type":"application/json-appointment",
+        "item":{            
+            "startDate":"20081004T170000Z",
+            "endDate":"20081004T180000Z",
+            "subject":"teste",
+            "location":"Rome",
+            "importance":"0",
+            "allDay":"false"
+        }
+    }
+}

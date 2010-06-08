@@ -1,0 +1,9 @@
+{"data" : {
+        "content-type" : "application/json-appointment",
+        "item" : {
+            "subject": "sub",
+            "startDate": "20081002T170000Z",
+            "location": "Rome"
+        }
+    }
+}

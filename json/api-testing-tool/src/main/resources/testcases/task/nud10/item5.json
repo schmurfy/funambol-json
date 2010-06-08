@@ -1,0 +1,23 @@
+{"data":{
+        "content-type":"application\/json-task",
+        "item":{
+            "subject":"lol77",
+            "body":"RTHPY*UP*HÇT*YWPT)%&/($",
+            "startDate":"2001-01-01 00:00:00",
+            "dueDate":"2020-02-02 00:00:00",
+            "status":"1",
+            "importance":"1",
+            "completed":"2",            
+            "reminder":"1",
+            "reminder_date":"2008-01-03 00:00:00",
+            "details_date_completed":"2016-01-07 00:00:00",
+            "details_total_work":"333",
+            "details_actual_work":"424",
+            "details_mileage":"1231234",
+            "details_billing_information":"32123000",
+            "details_companies":"=)(/&%$#!",            
+            "percent_complete":"99.000",
+            "SentReminder":"No"            
+        }
+    }
+}

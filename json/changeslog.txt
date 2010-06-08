@@ -1,0 +1,282 @@
+2010-06-08
+- derose:
+    Changes to the TaskConverter:
+      * added the categories field
+    Updated the unit tests to reflect the new field
+
+2010-06-07
+- derose:
+    Changes to the TaskConverter:
+      * Fixed the support for reminder time
+        (it did not initialize correctly the alarm time)
+      * Added the support for timezones in reminder
+
+2010-05-31
+- derose: Fixed the support for timezones for the
+          recurrency exception field in AppoinmentConverter.
+- gazza: pom files changed to prepare comed release.
+
+2010-05-28
+- derose:
+          Changes to the AppointmentConverter:
+            * fixed use of the folder field
+            * fixed (?) use of daylight and tz fields
+            * fixed use of the body field
+            * fixed use of the location field
+            * fixed use of the categories
+            * fixed use of the busystatus field
+            * fixed use of the priority field
+            * added the ReminderSoundfile field
+            * added use of the organizer field 
+          Changes to the TaskConverter
+            * fixed use of the folder field
+            * fixed use of the DtStart field
+            * fixed use of the DueDate field
+            * fixed use of the Description field
+            * fixed use of the Status field
+            * added the ReminderSoundfile field
+            * fixed use of the Organizer field
+
+2010-05-28
+- sinopoli: 8422 - During a sync, items not acceptable for twins search must
+                   be rejected. The fix that I employed is along the same lines
+                   as proposed in bug #8257
+
+2010-05-06
+- nichele: 9310 - Wrong HTTPClient usage
+
+2010-04-30
+- gasparetto: 8841 - Exception processing message.
+              9154 - Missing ability to fail the sync in case of
+              system exception.
+              Fixed inconsistency in exception management.
+              Added a flag to stop the sync when a backend server exception
+              is thrown.
+
+2010-04-20
+- gasparetto: Fix for disappearing backslashes on a json rfc item sync.
+
+2010-04-16
+- gasparetto: Contact converter fixes for folder, email, photo, sensitivity
+              fields.
+
+2010-04-16
+- machi: added some junits to the ContactConverterTest in order to check that 
+         phone numbers including a '+' prefix are handled properly when appling 
+         conversions from/to sif,vcard,json and json rfc. 
+         Fixed a junit test failing on the AppointmentConverterTest due to a 
+         daylight.
+
+2010-04-06
+- gasparetto: Fix for the calendar smart sync source, now it works like the
+              foundation calendar connector.
+
+2010-04-01
+- gasparetto: Added 2 new unit tests for the new fields in the Contact to JSON
+              converter (including a picture).
+              Implemented the smart sync source and added some unit tests.
+
+2010-03-19
+- gasparetto: Refactored the contact converter. Added the missing contact fields
+              to the conversion.
+
+2010-03-16
+- lulu: Fixed bug #8921 - Mobile home and Mobile work fields are not handled by
+        the json connector.
+
+---------------------------------
+Funambol JSON Connector 8.2.7
+----------------------------------
+2010-03-03
+- lulu: Fixed bug #8747 - "JSON" connector doesn't handle 'class' property in
+        appointments.
+        Now, both appointment and task support the sensitivity property.
+
+---------------------------------
+Funambol JSON Connector 8.2.6
+----------------------------------
+2009-11-18
+- gibi: adding code in order to suppurt the issue 8075; unit test under development 
+
+---------------------------------
+Funambol JSON Connector 8.2.5
+----------------------------------
+2009-11-17
+- gibi: Bug 8130 - after slow sync and merge, event is synced back to Backend 
+        using vCalendar 1.0 even if the back end is using vcal 2.0
+
+---------------------------------
+Funambol JSON Connector 8.2.4
+----------------------------------
+2009-11-10
+- lulu: Bug 8083 - JSON connector: task field values disappear
+
+---------------------------------
+Funambol JSON Connector 8.2.3
+----------------------------------
+2009-11-06
+- paulo: Bug 8067 - Wrong session ID with method "PUT" for vcard
+
+2009-11-05
+- paulo: Bug 7975 - Tasks sync with "JSON" connector: Error converting date [T000000]
+
+---------------------------------
+Funambol JSON Connector 8.2.2
+----------------------------------
+2009-10-27
+- paulo: Bug 7963 - JSON Connector - JSON connector trying to update appointment without resource key
+
+---------------------------------
+Funambol JSON Connector 8.2.1
+----------------------------------
+2009-10-23
+- paulo: Bug 7944 -  Outlook contact field gets lost passing through the "JSON" Connector
+- paulo: Bug 7974 -  "JSON" connector: Contact field "email2" not updated on Outlook when modified on back-end
+- paulo: Bug 7881 -  Error when a conflict is discovered by updating a task
+- paulo: Bug 7990 -  Update after merge does not work on ical/vcal backends
+- paulo: Bug 7969 -  "JSON" connector doesn't properly treat contact objects without 'folder' field
+
+2009-10-19
+- paulo:fixed bug 7944 - JSON Connector - Outlook contact field gets lost passing through the "JSON" Connector
+
+
+----------------------------------
+Funambol JSON Connector 8.2.0
+----------------------------------
+2009-10-09
+- paulo:US3170 - added ical<->vcal convertion (support for vcal devices)
+- paulo:added support for vcal backends
+
+----------------------------------
+Funambol JSON Connector 7.1.1
+----------------------------------
+
+2009-08-06
+- fabius: fixed issue when JSONObject not contain key 'parameters'
+
+2009-08-06
+- lulu: fixed issue in allday yearly recurring event with an exception that 
+        generated an error during the sync.
+
+----------------------------------
+Funambol JSON Connector 7.1.0
+----------------------------------
+2009-04-03
+- gibi: upgraded to the 7.1 funambol platform
+
+----------------------------------
+Funambol JSON Connector 7.0.5
+----------------------------------
+2009-04-03
+- gibi: fixed an issue in the unit test (AppointmentConverterTest - timezone)
+
+2009-03-31
+- gibi: reviewed the "webpage" field management in the Contact Converter 
+
+----------------------------------
+Funambol JSON Connector 7.0.4
+----------------------------------
+2009-02-11
+- gibi: implement the endSync call
+
+2009-02-10
+- gibi: added test for allDay appointment and task
+
+2009-02-06
+- gibi: added test for VCAL converter
+
+2009-02-02
+- gibi: improved parser for firstname anf lastname
+- gibi: temporary patch for the vcard without EMAIL field (it should be fixed by Synclet)
+
+2009-01-29
+- gibi: fixed issue about PostOfficeBox and ExtendedAddress for the three kind of address
+
+----------------------------------
+Funambol JSON Connector 7.0.3
+----------------------------------
+2009-01-27
+- gibi: added test for nokia N95
+
+2009-01-26
+- gibi: added more test about recurring all-day (patternStartDate, patternEndDate)
+
+2009-01-22
+- gibi: fixed issue about the priority = 0 from client (Utility.ImportanceCleint2Server)
+- gibi: fixed issue about the GUID in the merge method (Update method for Appointment and Task)
+
+----------------------------------
+Funambol JSON Connector 7.0.2
+----------------------------------
+2009-01-15
+- gibi: added "sensitivity" property in the contact object
+- gibi: removed phone number: ISDN
+
+2009-01-14
+- gibi: improved the management of the fields: title, middle_name, suffix,
+        phone number: ISDN, phone number: TTY/TDD, Web address, IM address
+- gibi: added the content-type in the ToJSON methods
+- gibi: added the error code management in the beginSync
+- gibi: added some comments in the Officer and BginSync (DAO)
+- gibi: reviewed the lib dependency in the pom.xml
+- gibi: removed the "printStackTrace" in the code
+
+----------------------------------
+Funambol JSON Connector 7.0.1
+----------------------------------
+2008-12-18
+- gibi: removed customer references
+- gibi: added some comments in the add, update, remove methods
+
+2008-12-17
+- gibi: added the NoteSyncSource and all the related classes
+
+2008-12-16
+- gibi: added the removeAllItems method
+
+2008-12-12
+- gibi: the twin method sends all the fields
+
+2008-12-11
+- gibi: removed the admin users list; now the authentication of the admin is based on the Roles
+- gibi: improved the json error message Parser
+
+2008-12-04
+- gibi: removed the "status" set in the SyncSource (to be reviewed)
+- gibi: added the user provisioning feature
+
+2008-12-03
+- gibi: fixed the logout request
+- gibi: added the "since" parameter for the add, update, remove, merge methods
+- gibi: added the vcal management in all layers (SyncSource, Manager, Converter)
+- gibi: reviewed the vcard management in all layers (SyncSource, Manager, Converter)
+
+2008-12-02
+- gibi: changed the DataTransformerManager for the jsonscard
+
+----------------------------------
+Funambol JSON Connector 7.0.0
+----------------------------------
+2008-12-01
+- gibi: reviewed the fake web server port of the unit test
+
+2008-11-27
+- machi: created constant for log name and fixed classes to use it in logger retrieving  
+
+2008-11-27
+- gibi: added all the missing fields in the Contact Converter procedure  
+
+2008-11-10
+- gibi: implemeted the mergeableSyncSource for the Contact SyncSource 
+
+2008-11-10
+- paulo: added possibility for a user to login with admin credentials 
+- paulo: added md5 support
+
+2008-11-05
+- paulo: fixed issue on twin detection, twin detection must be performed by posting a json item
+
+2008-10-28 
+- paulo: renamed package com.funambol.json.engine to com.funambol.json.engine.source
+- paulo: added converter to/from jsonvcard format
+- paulo: added option to admin panel, to let the user choose if the backend requires vcard/ical items

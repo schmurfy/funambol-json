@@ -1,0 +1,11 @@
+{"data" : {
+        "content-type" : "application/json-appointment",
+        "item" : {
+            "subject": "Kick off meeting",
+            "tzid": "America/Mexico_City",
+            "startDate": "20081002T170000Z",
+            "endDate": "20081002T180000Z",
+            "location": "Acapulco"
+        }
+    }
+}

@@ -1,0 +1,18 @@
+machi - 2008-12-16
+- fixed time references (testStartTime, syncBeginTime, lastSyncTime)
+- fixed deleteAllItems method
+- added since and until parameter to getNew, getUpdated, getDeleted
+- fixed UTF-8 charset use in add and update method
+- fixed the management of local file (representing updated item)
+- fixed log configuration file
+
+
+paulo - 2008-11-05
+-fixed issue on twin detection, twin detection must be performed by posting a json item
+
+paulo - 2008-10-31
+- replaced "token" with "sessionid" json key
+- logout now sends the sessionid
+
+paulo - 2008-10-28 
+- initial release

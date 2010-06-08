@@ -1,0 +1,18 @@
+{"data":{
+        "content-type":"application\/json-task",
+        "item":{
+            "subject":")=(&/%$#",
+            "body":"RTHPY*UP*HÇT*YWPT)%&/($",
+            "startDate":"20010101",
+            "dueDate":"20200202",
+            "status":"1",
+            "importance":"1",
+            "completed":"2",            
+            "reminder":"1",
+            "reminder_date":"20090103T000000",            
+            "percent_complete":"98.000",
+            "SentReminder":"No",
+            "allDay":"true"         
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{"data" : {
+        "content-type" : "application/json-appointment",
+        "item" : {
+            "subject": "ª*)(/&%$##!",
+            "tzid": "GMT",
+            "startDate": "20081013",
+            "endDate": "20081015",
+            "location": "Sarzedinha",
+                        "importance":"0",
+            "allDay":"true"
+        }
+    }
+}
