@@ -1,11 +1,15 @@
 <?xml version="1.0" ?>
 
-<!-- Pick up the environment variables -->
+<!-- Install script for JSON module-->
 <project name="Funambol JSON connector" default="install"
          basedir=".">
 
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+
+    <!-- Pick up the environment variables -->
     <property environment="ENV"/>
-    
+
+    <!--  Install tasks -->
     <target name="install">
         <antcall target="install-${ENV.APPSRV}"/>
         <echo message="Funambol JSON connector successfully completed"/>
@@ -21,12 +25,22 @@
 
     <target name="install-tomcat">
         <echo message="Install Funambol JSON connector on Tomcat (${basedir})"/>
-       
-        <delete>
-            <fileset dir="${funambol-home}/modules" includes="json-connector*" excludes="${module}*"/>
-            <fileset dir="${ENV.J2EE_HOME}/webapps/funambol/WEB-INF/lib/" includes="json-connector*" excludes="${module}*"/>
+
+        <property name="webapp.dir" value="${ENV.J2EE_HOME}/webapps/"/>
+
+        <!-- Get version from module name -->
+        <propertyregex property="version" input="${module}"
+                       regexp="json-connector-(.*)" select="\1"/>
+
+        <!-- Delete any json connector library except the version we are installing -->
+        <delete quiet="true" verbose="true">
+            <fileset dir="${webapp.dir}" includes="**/json-connector-*.jar"
+                     excludes="**/json-connector-${version}*.jar"/>
+            <fileset dir="${webapp.dir}" includes="**/json-core-*.jar"
+                     excludes="**/json-core-${version}*.jar"/>
         </delete>
 
     </target>
+
 </project>
 
