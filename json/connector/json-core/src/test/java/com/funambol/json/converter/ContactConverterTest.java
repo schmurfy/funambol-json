@@ -2634,6 +2634,62 @@ public class ContactConverterTest extends TestCase {
     }
 
     /**
+     *
+     * 
+     * @throws Exception
+     */
+    public void test_Vcard2Json_Photo() throws Exception {
+
+        String vcard1 =
+            "BEGIN:VCARD\n" +
+            "VERSION:2.1\n" +
+            "N:Surname;Name;;;\n" +
+            "FN:Name Surname\n" +
+            "ADR;HOME:P.O. Box;Ext;Street;Town;ST;ZIP;\n" +
+            "BDAY:1995-01-01\n" +
+            "TEL;VOICE;HOME:+1-555-555-1234\n" +
+            "EMAIL;INTERNET:test@mail.com\n" +
+            "EMAIL;INTERNET;HOME:tracy@tracy.org\n" +
+            "URL:http://abc.com/pub/directory/northam/jpublic.ecd\n" +
+            "URL;HOME:http://www.tracy.org\n" +
+            "ADR;WORK:;;Street;Town;ST;ZIP;COUNTRY\n" +
+            "ROLE:Role\n" +
+            "TITLE:Title\n" +
+            "ORG:Org;Div;Dep\n" +
+            "TEL;VOICE;WORK:1555566667777\n" +
+            "TEL;FAX;WORK:+1-800-555-1234\n" +
+            "URL;WORK:http://www.abc.com\n" +
+            "NOTE:Don't forget to order Girl Scout cookies from Stacey today!\n" +
+            "PHOTO;VALUE=URL;TYPE=GIF:http://www.abc.com/dir_photos/my_photo.gif\n" +
+            "CLASS:PUBLIC\n" +
+            "END:VCARD\n";
+
+        Contact contact1 = TestUtility.vcard2Contact(vcard1);
+
+        JsonItem<Contact> jsonItem1 = new JsonItem<Contact>();
+        jsonItem1.setContentType("type");
+        jsonItem1.setKey("0");
+        jsonItem1.setState("A");
+        jsonItem1.setItem(contact1);
+
+        String result1 = converter.toJSON(jsonItem1);
+        JSONObject jsonObject1 = JSONObject.fromObject(result1)
+                                          .getJSONObject("data")
+                                          .getJSONObject("item");
+
+        assertEquals("http://www.abc.com/dir_photos/my_photo.gif",
+                     jsonObject1.optString("photoUrl"));
+        assertEquals("GIF",
+                     jsonObject1.optString("photoType"));
+
+        JsonItem<Contact> jsonItem2 = converter.fromJSON(result1);
+        Contact contact2 = jsonItem2.getItem();
+        String vcard2 = TestUtility.contact2vcard(contact2);
+
+        assertEqualsVcard(vcard1, vcard2);
+    }
+
+    /**
      * This method allows to compare an expected vcard with a result vcard tring to
      * perform a smart matching.
      * If the comparison fails, the test who called this method failed providing

@@ -242,6 +242,7 @@ public class ContactConverter implements Converter<JsonItem<Contact>> {
                     putJsonValue(jsonItem, JsonContactModel.PHOTO_TYPE.getValue(), photo.getType());
                 } else if (photo.getUrl() != null) {
                     putJsonValue(jsonItem, JsonContactModel.PHOTO_URL.getValue(), photo.getUrl());
+                    putJsonValue(jsonItem, JsonContactModel.PHOTO_TYPE.getValue(), photo.getType());
                 } else {
                     putJsonValue(jsonItem, JsonContactModel.PHOTO.getValue(), "");
                 }
@@ -452,8 +453,12 @@ public class ContactConverter implements Converter<JsonItem<Contact>> {
 
         // photo
         String imageUrl = Utility.getJsonValue(jsonItem, JsonContactModel.PHOTO_URL.getValue());
+        String imageType = Utility.getJsonValue(jsonItem, JsonContactModel.PHOTO_TYPE.getValue());
         if (imageUrl != null) {
             Photo photo = new Photo(imageUrl, null);
+            if (imageType != null) {
+                photo.setType(imageType);
+            }
             personalDetail.setPhotoObject(photo);
         } else {
             String encodedImage = Utility.getJsonValue(jsonItem, JsonContactModel.PHOTO.getValue());
@@ -461,7 +466,6 @@ public class ContactConverter implements Converter<JsonItem<Contact>> {
                 Photo photo = new Photo();
                 if (encodedImage.length() > 0) {
                     photo.setImage(Base64.decode(encodedImage));
-                    String imageType = Utility.getJsonValue(jsonItem, JsonContactModel.PHOTO_TYPE.getValue());
                     photo.setType(imageType);
                 }
                 personalDetail.setPhotoObject(photo);
