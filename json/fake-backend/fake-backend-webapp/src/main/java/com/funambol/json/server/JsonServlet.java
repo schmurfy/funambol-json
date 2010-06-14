@@ -243,7 +243,8 @@ public class JsonServlet extends HttpServlet implements javax.servlet.Servlet {
                      */
                     case Request.SYNC:
                         if (req.getTypeID() == Request.BEGIN) {
-                            responseString = "{\"data\":{\"preferred-content-type\":\"" + rep.getSourceTypeByResource(req.getResource()) + "\"}}";
+                            //responseString = "{\"data\":{\"preferred-content-type\":\"" + rep.getSourceTypeByResource(req.getResource()) + "\"}}";
+                            responseString = "";
                         } else if (req.getTypeID() == Request.END) {
                             //say nothing
                             responseString = "";

@@ -1,3 +1,9 @@
+2010-06-14
+- sinopoli: 7867 - preferred-content-type is not respected 
+            Removed the mime type from the response to the beginSync, in the documentation and in the code.
+            Deleted the parameter vardIcalBackend in the admin panel and in jsconnector.xml file.
+            Added a datastore type parameter in the admin panel and in each sync source.
+            Updated unit test and api testing tool.  	
 2010-06-08
 - derose:
     Changes to the TaskConverter:

@@ -90,12 +90,14 @@ implements Serializable {
     private JLabel           nameLabel          = new JLabel()     ;
     private JTextField       nameValue          = new JTextField() ;
     private JLabel           typeLabel          = new JLabel()     ;
+    private JLabel           datastoretypeLabel = new JLabel()     ;
     private JLabel           sourceUriLabel     = new JLabel()     ;
     private JTextField       sourceUriValue     = new JTextField() ;
     private JButton          confirmButton      = new JButton()    ;
     
     private TitledBorder titledBorder;
     private JComboBox typeCombo = new JComboBox();
+
 
     /**
      * Creates a new ContactSyncSourceAdminPanel instance
@@ -142,7 +144,7 @@ implements Serializable {
         nameValue.setBounds(new Rectangle(VALUE_X, y, 350, 18));
         y += GAP_Y; // New line
 
-        typeLabel.setText("Type: ");
+        typeLabel.setText("Client Type: ");
         typeLabel.setFont(defaultFont);
         typeLabel.setBounds(new Rectangle(LABEL_X, y, 150, 18));
         typeCombo.setFont(defaultFont);
@@ -177,15 +179,15 @@ implements Serializable {
         });
 
         // Adds all components to the panel
-        this.add(panelName        , null);
-        this.add(nameLabel        , null);
-        this.add(sourceUriLabel   , null);
-        this.add(sourceUriValue   , null);
-        this.add(nameValue        , null);
-        this.add(typeLabel        , null);
-        this.add(typeCombo        , null);
-        this.add(confirmButton    , null);
-
+        this.add(panelName         , null);
+        this.add(nameLabel         , null);
+        this.add(sourceUriLabel    , null);
+        this.add(sourceUriValue    , null);
+        this.add(nameValue         , null);
+        this.add(typeLabel         , null);
+        this.add(typeCombo         , null);
+        this.add(confirmButton     , null);
+     
     }
 
     /**
@@ -331,8 +333,8 @@ implements Serializable {
         }
         return null;
     }
-    
-    /**
+
+     /**
      * Sets the source info of the given syncsource based on the given selectedType
      */
     public void setSyncSourceInfo(SyncSource syncSource, String selectedType) {
@@ -348,4 +350,5 @@ implements Serializable {
 
         pimSource.setInfo(new SyncSourceInfo(contentTypes, 0));
     }
+
 }

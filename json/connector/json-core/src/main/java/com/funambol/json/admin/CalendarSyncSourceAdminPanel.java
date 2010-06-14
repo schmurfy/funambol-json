@@ -61,7 +61,6 @@ import com.funambol.framework.engine.source.SyncSource;
 import com.funambol.framework.engine.source.SyncSourceInfo;
 import com.funambol.json.engine.source.CalendarSyncSource;
 
-
 /**
  * This class implements the configuration panel for CalendarSyncSource
  * 
@@ -72,45 +71,39 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
     /**
      * Allowed characters for name and uri
      */
-    public static final String NAME_ALLOWED_CHARS
-    = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_.";
-    
+    public static final String NAME_ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_.";
     protected static final String TYPE_LABEL_SIFE = "SIF-E";
     protected static final String TYPE_LABEL_SIFT = "SIF-T";
     protected static final String TYPE_LABEL_VCAL = "VCal";
     protected static final String TYPE_LABEL_ICAL = "ICal";
-    
+    protected static final String TYPE_LABEL_JSON_EXT = "Json Extended";
     protected static final String TYPE_SIFE = "text/x-s4j-sife";
     protected static final String TYPE_SIFT = "text/x-s4j-sift";
     protected static final String TYPE_VCAL = "text/x-vcalendar";
     protected static final String TYPE_ICAL = "text/calendar";
-
-    protected static final String VERSION_SIFE  = "1.0";
-    protected static final String VERSION_SIFT  = "1.0";
-    protected static final String VERSION_VCAL  = "1.0";
-    protected static final String VERSION_ICAL  = "2.0";
-
+    protected static final String TYPE_JSON_EXT = "text/jsonextended";
+    protected static final String VERSION_SIFE = "1.0";
+    protected static final String VERSION_SIFT = "1.0";
+    protected static final String VERSION_VCAL = "1.0";
+    protected static final String VERSION_ICAL = "2.0";
+    protected static final String VERSION_JSONEXT = "";
     /** label for the panel's name */
     private JLabel panelName = new JLabel();
-
     private final String PANEL_NAME = "Edit Appointment and Task SyncSource";
-
     /** border to evidence the title of the panel */
-    private TitledBorder  titledBorder;
-
-    private JLabel           nameLabel          = new JLabel()     ;
-    private JTextField       nameValue          = new JTextField() ;
-    private JLabel           typeLabel          = new JLabel()     ;
-    private JLabel           sourceUriLabel     = new JLabel()     ;
-    private JTextField       sourceUriValue     = new JTextField() ;
-    private JButton          confirmButton      = new JButton()    ;
-    
+    private TitledBorder titledBorder;
+    private JLabel nameLabel = new JLabel();
+    private JTextField nameValue = new JTextField();
+    private JLabel typeLabel = new JLabel();
+    private JLabel datastoretypeLabel = new JLabel();
+    private JLabel sourceUriLabel = new JLabel();
+    private JTextField sourceUriValue = new JTextField();
+    private JButton confirmButton = new JButton();
     private JCheckBox eventValue;
-    
     private JCheckBox taskValue;
     private JComboBox typeCombo = new JComboBox();
-    
-    
+    private JComboBox datastoretypeCombo = new JComboBox();
+
     /**
      * Creates a new ContactSyncSourceAdminPanel instance
      */
@@ -118,13 +111,12 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
         init();
     }
 
-
     /**
      * Create the panel
      * @throws Exception if error occures during creation of the panel
      */
-    private void init(){
-    	
+    private void init() {
+
         this.setLayout(null);
         // set properties of label, position and border
         //  referred to the title of the panel
@@ -156,17 +148,26 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
         nameValue.setBounds(new Rectangle(VALUE_X, y, 350, 18));
         y += GAP_Y; // New line
 
-        typeLabel.setText("Type: ");
+        typeLabel.setText("Client Type: ");
         typeLabel.setFont(defaultFont);
         typeLabel.setBounds(new Rectangle(LABEL_X, y, 150, 18));
         typeCombo.setFont(defaultFont);
         typeCombo.setBounds(new Rectangle(VALUE_X, y, 350, 18));
         typeCombo.addItemListener(new ItemListener() {
+
             public void itemStateChanged(ItemEvent e) {
                 updateEntityTypeCheckBoxes();
             }
         });
-        
+
+        y += GAP_Y; // New line
+
+        datastoretypeLabel.setText("Datastore Type: ");
+        datastoretypeLabel.setFont(defaultFont);
+        datastoretypeLabel.setBounds(new Rectangle(LABEL_X, y, 150, 18));
+        datastoretypeCombo.setFont(defaultFont);
+        datastoretypeCombo.setBounds(new Rectangle(VALUE_X, y, 350, 18));
+
         y += GAP_Y; // New line
         int x = LABEL_X;
 
@@ -180,7 +181,8 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
 
         // What happens when the confirmButton is pressed?
         confirmButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event ) {
+
+            public void actionPerformed(ActionEvent event) {
                 try {
                     validateValues();
                     getValues();
@@ -200,18 +202,20 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
         });
 
         // Adds all components to the panel
-        this.add(panelName        , null);
-        this.add(nameLabel        , null);
-        this.add(sourceUriLabel   , null);
-        this.add(sourceUriValue   , null);
-        this.add(nameValue        , null);
-        this.add(typeLabel        , null);
-        this.add(typeCombo        , null);
-        this.add(confirmButton    , null);
-        this.add(eventValue		  , null);
-        this.add(taskValue		  , null);
+        this.add(panelName, null);
+        this.add(nameLabel, null);
+        this.add(sourceUriLabel, null);
+        this.add(sourceUriValue, null);
+        this.add(nameValue, null);
+        this.add(typeLabel, null);
+        this.add(typeCombo, null);
+        this.add(confirmButton, null);
+        this.add(eventValue, null);
+        this.add(taskValue, null);
+        this.add(datastoretypeLabel, null);
+        this.add(datastoretypeCombo, null);
 
-    
+
     }
 
     /**
@@ -221,18 +225,16 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
      * @param syncSource the SyncSource instance
      */
     public void updateForm() {
-         if (!(getSyncSource() instanceof CalendarSyncSource)) {
-          notifyError(
-              new AdminException(
-                  "This is not an ContactSyncSource! Unable to process SyncSource values."
-              )
-          );
-          return;
+        if (!(getSyncSource() instanceof CalendarSyncSource)) {
+            notifyError(
+                    new AdminException(
+                    "This is not an ContactSyncSource! Unable to process SyncSource values."));
+            return;
         }
         if (getState() == STATE_INSERT) {
-          confirmButton.setText("Add");
+            confirmButton.setText("Add");
         } else if (getState() == STATE_UPDATE) {
-          confirmButton.setText("Save");
+            confirmButton.setText("Save");
         }
 
         CalendarSyncSource syncSource = (CalendarSyncSource) getSyncSource();
@@ -250,16 +252,32 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
         if (types == null) {
             types = new ArrayList();
         }
-        for (int i=0; i< types.size(); i++) {
+        for (int i = 0; i < types.size(); i++) {
             typeCombo.addItem(types.get(i));
         }
         String typeToSelect = getTypeToSelect(syncSource);
-        if (typeToSelect != null)  {
+        if (typeToSelect != null) {
             typeCombo.setSelectedItem(typeToSelect);
         } else {
             typeCombo.setSelectedIndex(0);
         }
-        
+
+        // Preparing to populate the backend combo box...
+        datastoretypeCombo.removeAllItems();
+        types = getBackendTypes();
+        if (types == null) {
+            types = new ArrayList();
+        }
+        for (int i = 0; i < types.size(); i++) {
+            datastoretypeCombo.addItem(types.get(i));
+        }
+        typeToSelect = getBackendTypeToSelect(syncSource);
+        if (typeToSelect != null) {
+            datastoretypeCombo.setSelectedItem(typeToSelect);
+        } else {
+            datastoretypeCombo.setSelectedIndex(0);
+        }
+
         updateEntityTypeCheckBoxes();
     }
 
@@ -274,7 +292,7 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
      *         </ul>
      */
     private void validateValues() throws IllegalArgumentException {
-    	String value = null;
+        String value = null;
 
         value = nameValue.getText();
         if (StringUtils.isEmpty(value)) {
@@ -289,7 +307,7 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
                     + "\n" + NAME_ALLOWED_CHARS);
         }
 
-        value = (String)typeCombo.getSelectedItem();
+        value = (String) typeCombo.getSelectedItem();
         if (StringUtils.isEmpty(value)) {
             throw new IllegalArgumentException("Field 'Type' cannot be empty. "
                     + "Please provide a SyncSource type.");
@@ -301,33 +319,35 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
                     "Field 'Source URI' cannot be empty. "
                     + "Please provide a SyncSource URI.");
         }
-        
+
         if (!eventValue.isSelected() && !taskValue.isSelected()) {
             throw new IllegalArgumentException(
                     "Please check at least one between 'Events' and 'Tasks'.");
         }
-        
-        
+
+
     }
 
     /**
      * Set syncSource properties with the values provided by the user.
      */
     private void getValues() {
-        
-    	CalendarSyncSource syncSource = (CalendarSyncSource)getSyncSource();
+
+        CalendarSyncSource syncSource = (CalendarSyncSource) getSyncSource();
 
         syncSource.setSourceURI(sourceUriValue.getText().trim());
         syncSource.setName(nameValue.getText().trim());
 
         String transformationsRequired = null;
-       
+
         SyncSourceManagementObject mo = (SyncSourceManagementObject) getManagementObject();
-        
+
         mo.setTransformationsRequired(transformationsRequired);
 
-        setSyncSourceInfo(syncSource, (String)typeCombo.getSelectedItem());
-        
+        setSyncSourceInfo(syncSource, (String) typeCombo.getSelectedItem());
+
+        setBackendSyncSourceInfo(syncSource, (String) datastoretypeCombo.getSelectedItem());
+
         if ((eventValue == null) || (taskValue == null)) {
             return;
         }
@@ -344,9 +364,7 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
         }
         syncSource.setEntityType(entityType);
     }
-        
-    
-    
+
     /**
      * Updates entities checkboxes according to the selected type
      */
@@ -358,15 +376,15 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
             eventValue.setEnabled(false);
             taskValue.setEnabled(false);
         } else {
-            CalendarSyncSource syncSource = (CalendarSyncSource)getSyncSource();
+            CalendarSyncSource syncSource = (CalendarSyncSource) getSyncSource();
             boolean events = false;
             boolean tasks = false;
-            if (syncSource.getEntityType() == null ||
-                    syncSource.getEntityType().isAssignableFrom(Event.class)) {
+            if (syncSource.getEntityType() == null
+                    || syncSource.getEntityType().isAssignableFrom(Event.class)) {
                 events = true;
             }
-            if (syncSource.getEntityType() == null ||
-                    syncSource.getEntityType().isAssignableFrom(Task.class)) {
+            if (syncSource.getEntityType() == null
+                    || syncSource.getEntityType().isAssignableFrom(Task.class)) {
                 tasks = true;
             }
             eventValue.setSelected(events);
@@ -376,7 +394,7 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
             taskValue.setEnabled(true);
         }
     }
-    
+
     /**
      * Checks whether a SIF content type is selected.
      *
@@ -387,15 +405,15 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
         if (typeCombo.getItemCount() == 0) {
             return false;
         }
-        return ((String)typeCombo.getSelectedItem()).startsWith("SIF");
+        return ((String) typeCombo.getSelectedItem()).startsWith("SIF");
     }
-    
+
     private boolean areEventsAllowed() {
         if (typeCombo.getSelectedItem() == null) {
             return false;
         }
 
-        if (TYPE_LABEL_SIFT.equals((String)typeCombo.getSelectedItem())) {
+        if (TYPE_LABEL_SIFT.equals((String) typeCombo.getSelectedItem())) {
             return false;
         }
         return true;
@@ -406,12 +424,12 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
             return false;
         }
 
-        if (TYPE_LABEL_SIFE.equals((String)typeCombo.getSelectedItem())) {
+        if (TYPE_LABEL_SIFE.equals((String) typeCombo.getSelectedItem())) {
             return false;
         }
         return true;
     }
-    
+
     /**
      * Returns the available types
      * @return the available types;
@@ -426,13 +444,25 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
     }
 
     /**
+     * Returns the available types
+     * @return the available types;
+     */
+    protected List getBackendTypes() {
+        List supportedTypes = new ArrayList();
+        supportedTypes.add(TYPE_LABEL_JSON_EXT);
+        supportedTypes.add(TYPE_LABEL_VCAL);
+        supportedTypes.add(TYPE_LABEL_ICAL);
+        return supportedTypes;
+    }
+
+    /**
      * Returns the type to select based on the given syncsource
      * @return the type to select based on the given syncsource
      */
     protected String getTypeToSelect(SyncSource syncSource) {
         String preferredType = null;
-        if (syncSource.getInfo() != null &&
-            syncSource.getInfo().getPreferredType() != null) {
+        if (syncSource.getInfo() != null
+                && syncSource.getInfo().getPreferredType() != null) {
 
             preferredType = syncSource.getInfo().getPreferredType().getType();
             if (TYPE_ICAL.equals(preferredType)) {
@@ -450,7 +480,37 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
         }
         return null;
     }
-    
+
+    /**
+     * Returns the type to select based on the given syncsource
+     * @return the type to select based on the given syncsource
+     */
+    private String getBackendTypeToSelect(SyncSource syncSource) {
+        String preferredType = null;
+        CalendarSyncSource pimSource = (CalendarSyncSource) syncSource;
+        if (pimSource.getBackendType() != null
+                && pimSource.getBackendType().getPreferredType() != null) {
+
+            preferredType = pimSource.getBackendType().getPreferredType().getType();
+            if (TYPE_ICAL.equals(preferredType)) {
+                return TYPE_LABEL_ICAL;
+            }
+            if (TYPE_VCAL.equals(preferredType)) {
+                return TYPE_LABEL_VCAL;
+            }
+            if (TYPE_SIFE.equals(preferredType)) {
+                return TYPE_LABEL_SIFE;
+            }
+            if (TYPE_SIFT.equals(preferredType)) {
+                return TYPE_LABEL_SIFT;
+            }
+            if (TYPE_JSON_EXT.equals(preferredType)) {
+                return TYPE_LABEL_JSON_EXT;
+            }
+        }
+        return null;
+    }
+
     /**
      * Adds extra components just above the confirm button.
      *
@@ -463,7 +523,7 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
     private int addExtraComponents(int x, int y, int xGap, int yGap) {
 
         eventValue = new JCheckBox("Events");
-        taskValue  = new JCheckBox("Tasks");
+        taskValue = new JCheckBox("Tasks");
 
         eventValue.setFont(defaultFont);
         eventValue.setSelected(true);
@@ -479,7 +539,7 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
 
         return y + yGap;
     }
-    
+
     /**
      * Returns the panel name
      * @return the panel name
@@ -487,14 +547,14 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
     private String getPanelName() {
         return PANEL_NAME;
     }
-    
+
     /**
      * Sets the source info of the given syncsource based on the given selectedType
      * @param syncSource the source
      * @param selectedType the selected type
      */
     public void setSyncSourceInfo(SyncSource syncSource, String selectedType) {
-        CalendarSyncSource pimSource = (CalendarSyncSource)syncSource;
+        CalendarSyncSource pimSource = (CalendarSyncSource) syncSource;
         ContentType[] contentTypes = null;
         if (TYPE_LABEL_ICAL.equals(selectedType)) {
             contentTypes = new ContentType[2];
@@ -513,5 +573,33 @@ public class CalendarSyncSourceAdminPanel extends SourceManagementPanel implemen
         }
 
         pimSource.setInfo(new SyncSourceInfo(contentTypes, 0));
+    }
+
+    /**
+     * Sets the backend source info of the given syncsource based on the given selectedType
+     */
+    public void setBackendSyncSourceInfo(SyncSource syncSource, String selectedType) {
+        CalendarSyncSource pimSource = (CalendarSyncSource) syncSource;
+        ContentType[] contentTypes = null;
+        if (TYPE_LABEL_ICAL.equals(selectedType)) {
+            contentTypes = new ContentType[2];
+            contentTypes[0] = new ContentType(TYPE_ICAL, VERSION_ICAL);
+            contentTypes[1] = new ContentType(TYPE_VCAL, VERSION_VCAL);
+        } else if (TYPE_LABEL_VCAL.equals(selectedType)) {
+            contentTypes = new ContentType[2];
+            contentTypes[0] = new ContentType(TYPE_VCAL, VERSION_VCAL);
+            contentTypes[1] = new ContentType(TYPE_ICAL, VERSION_ICAL);
+        } else if (TYPE_LABEL_SIFE.equals(selectedType)) {
+            contentTypes = new ContentType[1];
+            contentTypes[0] = new ContentType(TYPE_SIFE, VERSION_SIFE);
+        } else if (TYPE_LABEL_SIFT.equals(selectedType)) {
+            contentTypes = new ContentType[1];
+            contentTypes[0] = new ContentType(TYPE_SIFT, VERSION_SIFT);
+        } else if (TYPE_LABEL_JSON_EXT.equals(selectedType)) {
+            contentTypes = new ContentType[1];
+            contentTypes[0] = new ContentType(TYPE_JSON_EXT, VERSION_JSONEXT);
+        }
+
+        pimSource.setBackendType(new SyncSourceInfo(contentTypes, 0));
     }
 }
