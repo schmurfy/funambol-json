@@ -66,8 +66,6 @@ public class JsonConnectorConfigPanel
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_./:";
     private JTextField serverValue;
     private JButton confirmButton = new JButton();
-    private JCheckBox backendFormatIcalVcard = new JCheckBox();
-    private JCheckBox vcalFormat = new JCheckBox();
     private JCheckBox stopSyncOnFatalError = new JCheckBox();
 
     public JsonConnectorConfigPanel() {
@@ -108,31 +106,9 @@ public class JsonConnectorConfigPanel
         serverValue.setBounds(150, 20, 220, 19);
         serverValue.setFont(defaultFont);
 
-        vcalFormat.setEnabled(false);
-        vcalFormat.setText("Backend uses vcal");
-        seccPanel.add(vcalFormat);
-        vcalFormat.setBounds(10, 80, 200, 15);
-
-        backendFormatIcalVcard.setText("Vcard/Ical format");
-        seccPanel.add(backendFormatIcalVcard);
-        backendFormatIcalVcard.setBounds(10, 50, 200, 15);
-
-        backendFormatIcalVcard.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent event) {
-                try {
-                    vcalFormat.setEnabled(backendFormatIcalVcard.isSelected());
-                   if (!backendFormatIcalVcard.isSelected()){
-                       vcalFormat.setSelected(false);
-                   }
-                } catch (Exception e) {
-                    notifyError(new AdminException(e.getMessage()));
-                }
-            }
-        });
-
+       
         add(seccPanel);
-        seccPanel.setBounds(10, 50, 380, 120);
+        seccPanel.setBounds(10, 50, 380, 70);
 
         //the ssl option panel
 
@@ -192,10 +168,6 @@ public class JsonConnectorConfigPanel
 
         serverValue.setText(jsonConf.getJsonServerUrl());
 
-        backendFormatIcalVcard.setSelected(jsonConf.getVcardIcalBackend());
-
-        vcalFormat.setSelected(jsonConf.getVcalFormat());
-        
         stopSyncOnFatalError.setSelected(jsonConf.getStopSyncOnFatalError());
     }
 
@@ -234,8 +206,7 @@ public class JsonConnectorConfigPanel
         JsonConnectorConfig jsonConf = (JsonConnectorConfig) getConfiguration();
 
         jsonConf.setJsonServerUrl((serverValue.getText().trim()));
-        jsonConf.setVcardIcalBackend(backendFormatIcalVcard.isSelected());
-        jsonConf.setVcalFormat(vcalFormat.isSelected());
+  
         jsonConf.setStopSyncOnFatalError(stopSyncOnFatalError.isSelected());
 
     }

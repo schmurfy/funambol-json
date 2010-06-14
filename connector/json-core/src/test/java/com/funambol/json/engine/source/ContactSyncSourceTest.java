@@ -108,6 +108,11 @@ public class ContactSyncSourceTest extends AbstractHttpTransportTest {
                                       new Timestamp(System.currentTimeMillis()),
                                       new Timestamp(System.currentTimeMillis()));
 
+            ContentType[] contentTypes = null;
+            contentTypes = new ContentType[1];
+            contentTypes[0] = new ContentType("text/x-s4j-sifc", "1.0");
+            source.setBackendType(new SyncSourceInfo(contentTypes, 0));
+            
             source.init();
             
             jsonServlet.setDoReturn(JsonServlet.BEGINSYNC);
@@ -118,7 +123,7 @@ public class ContactSyncSourceTest extends AbstractHttpTransportTest {
             Object anyKey = String.valueOf(System.currentTimeMillis()); // dummy
             SyncItem syncItem = new SyncItemImpl(source, anyKey, null, 
                     null, SyncItemState.NEW, sifcCard.getBytes(), null, "text/x-s4j-sifc", null);
-            
+
             SyncItemKey key = source.addSyncItem(syncItem).getKey();
             assertTrue(key.getKeyAsString().equals("0"));
             
@@ -261,7 +266,8 @@ public class ContactSyncSourceTest extends AbstractHttpTransportTest {
             ContentType[] contentTypes = new ContentType[1];
             contentTypes[0] = new ContentType("text/x-vcard", "2.1");
             source.setInfo(new SyncSourceInfo(contentTypes,0));
-
+            source.setBackendType(new SyncSourceInfo(contentTypes, 0));
+            
             source.init();
 
             jsonServlet.setDoReturn(JsonServlet.BEGINSYNC);
@@ -392,6 +398,11 @@ public class ContactSyncSourceTest extends AbstractHttpTransportTest {
                                       2, 
                                       new Timestamp(System.currentTimeMillis()),
                                       new Timestamp(System.currentTimeMillis()));
+
+            ContentType[] contentTypes = null;
+            contentTypes = new ContentType[1];
+            contentTypes[0] = new ContentType("text/x-s4j-sifc", "1.0");
+            source.setBackendType(new SyncSourceInfo(contentTypes, 0));
 
             source.init();
             

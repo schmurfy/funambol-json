@@ -65,6 +65,7 @@ import com.funambol.framework.engine.source.AbstractSyncSource;
 import com.funambol.framework.engine.source.MergeableSyncSource;
 import com.funambol.framework.engine.source.SyncContext;
 import com.funambol.framework.engine.source.SyncSourceException;
+import com.funambol.framework.engine.source.SyncSourceInfo;
 import com.funambol.framework.logging.FunambolLogger;
 import com.funambol.framework.logging.FunambolLoggerFactory;
 import com.funambol.framework.security.Sync4jPrincipal;
@@ -112,6 +113,7 @@ public class CalendarSyncSource extends AbstractSyncSource
     private boolean stopSyncOnFatalError = false;
     //specifies if the backend used webcalendar (ical/vcal) or json extended format
     private boolean vcalIcalBackend = false;
+    private SyncSourceInfo backendType;
     // specifies if the backend requires to receive items in vcal format
     // (used only when vcardIcalBackend =true)
     private boolean vcalFormat = false;
@@ -121,6 +123,14 @@ public class CalendarSyncSource extends AbstractSyncSource
     private long since = 0;
     protected String serverTimeZoneID = null;
     private TimeZone deviceTimeZone = null;
+
+    public SyncSourceInfo getBackendType() {
+        return backendType;
+    }
+
+    public void setBackendType(SyncSourceInfo backendType) {
+        this.backendType = backendType;
+    }
 
     public TimeZone getDeviceTimeZone() {
         return deviceTimeZone;
@@ -174,15 +184,23 @@ public class CalendarSyncSource extends AbstractSyncSource
             strategies.put(Task.class.getName(), new TaskSyncSourceStrategy());
 
             rxContentType = findRXContentType(syncContext);
+            String backendtype = backendType.getPreferredType().getType();
 
-            try {
-                vcalIcalBackend = JsonConnectorConfig.getConfigInstance().getVcardIcalBackend();
-                vcalFormat = JsonConnectorConfig.getConfigInstance().getVcalFormat();
-                stopSyncOnFatalError = JsonConnectorConfig.getConfigInstance().getStopSyncOnFatalError();
-            } catch (JsonConfigException ex) {
-                vcalIcalBackend = false;
-                vcalFormat = false;
-                stopSyncOnFatalError = false;
+            //if (vcalIcalBackend) {
+            if (TYPE[VCAL_FORMAT].equals(backendtype) || TYPE[ICAL_FORMAT].equals(backendtype)) {
+                try {
+                    if (TYPE[VCAL_FORMAT].equals(backendtype) || TYPE[ICAL_FORMAT].equals(backendtype)) {
+                        vcalIcalBackend = true;
+                    }
+                    if (TYPE[VCAL_FORMAT].equals(backendtype)) {
+                        vcalFormat = true;
+                    }
+                    stopSyncOnFatalError = JsonConnectorConfig.getConfigInstance().getStopSyncOnFatalError();
+                } catch (JsonConfigException ex) {
+                    vcalIcalBackend = false;
+                    vcalFormat = false;
+                    stopSyncOnFatalError = false;
+                }
             }
 
             setDeviceInfo(syncContext);
@@ -495,7 +513,6 @@ public class CalendarSyncSource extends AbstractSyncSource
             content = getContentFromSyncItem(syncItem);
 
             calendar = convert(content, contentType);
-
 
             contentToServer = convertCalendarToBackendRFC(calendar, content);
 

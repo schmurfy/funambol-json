@@ -107,6 +107,11 @@ public class TaskSyncSourceTest extends AbstractHttpTransportTest {
 
             jsonServlet.setDoReturn(JsonServlet.EMPTY);
 
+            ContentType[] contentTypes = null;
+            contentTypes = new ContentType[1];
+            contentTypes[0] = new ContentType("text/x-s4j-sifc", "1.0");
+            source.setBackendType(new SyncSourceInfo(contentTypes, 0));
+
             source.init();
 
             source.beginSync(context);

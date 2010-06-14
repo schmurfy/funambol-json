@@ -55,6 +55,7 @@ import com.funambol.framework.engine.source.AbstractSyncSource;
 import com.funambol.framework.engine.source.MergeableSyncSource;
 import com.funambol.framework.engine.source.SyncContext;
 import com.funambol.framework.engine.source.SyncSourceException;
+import com.funambol.framework.engine.source.SyncSourceInfo;
 import com.funambol.framework.logging.FunambolLogger;
 import com.funambol.framework.logging.FunambolLoggerFactory;
 import com.funambol.framework.security.Sync4jPrincipal;
@@ -102,12 +103,21 @@ public class ContactSyncSource extends AbstractSyncSource
     //specifies if the sync source should catch a backend server internal error
     private boolean stopSyncOnFatalError = false;
     private boolean vcardIcalBackend;
+    private SyncSourceInfo backendType;
     private Sync4jPrincipal principal;
     private String username;
     private String sessionID;
     private long since = 0;
     protected String serverTimeZoneID = null;
     private TimeZone deviceTimeZone = null;
+
+    public SyncSourceInfo getBackendType() {
+        return backendType;
+    }
+
+    public void setBackendType(SyncSourceInfo backendType) {
+        this.backendType = backendType;
+    }
 
     public TimeZone getDeviceTimeZone() {
         return deviceTimeZone;
@@ -155,8 +165,13 @@ public class ContactSyncSource extends AbstractSyncSource
 
             rxContentType = findRXContentType(syncContext);
 
+            //retrieve backend type
+            String backend = backendType.getPreferredType().getType();
+
             try {
-                vcardIcalBackend = JsonConnectorConfig.getConfigInstance().getVcardIcalBackend();
+                if (TYPE[VCARD_FORMAT].equals(backend)) {
+                    vcardIcalBackend = true;
+                }
                 stopSyncOnFatalError = JsonConnectorConfig.getConfigInstance().getStopSyncOnFatalError();
             } catch (JsonConfigException ex) {
                 vcardIcalBackend = false;
@@ -394,9 +409,17 @@ public class ContactSyncSource extends AbstractSyncSource
             String content = getContentFromSyncItem(syncItem);
             String contentType = syncItem.getType();
 
+            Contact contact = convert(content, contentType);
+
             //if the backend requires items in vcard/ical formart
+
+            //retrieve backend type
+            String backend = backendType.getPreferredType().getType();
+
+
             if (vcardIcalBackend) {
-                String objRFC = content;
+                //String objRFC = content;
+                String objRFC = convert(contact, backend);
 
                 JsonItem<String> contactItem = new JsonItem<String>();
                 contactItem.setItem(objRFC);
@@ -404,9 +427,8 @@ public class ContactSyncSource extends AbstractSyncSource
                 contactItem.setState("N");
 
                 key = manager.addRFCItem(sessionID, contactItem, since);
-
             } else {
-                Contact contact = convert(content, contentType);
+
 
                 JsonItem<Contact> contactItem = new JsonItem<Contact>();
                 contactItem.setItem(contact);
@@ -493,14 +515,19 @@ public class ContactSyncSource extends AbstractSyncSource
 
             String content = getContentFromSyncItem(syncItem);
             String contentType = syncItem.getType();
+            Contact contact = convert(content, contentType);
+            
+            //retrieve backend type
+            String backend = backendType.getPreferredType().getType();
 
             if (vcardIcalBackend) {
 
-                String objRFC = content;
+                //String objRFC = content;
+                String objRFC = convert(contact, backend);
 
                 JsonItem<String> contactItem = new JsonItem<String>();
                 contactItem.setItem(objRFC);
-                contactItem.setContentType(contentType);
+                contactItem.setContentType(backend);
                 contactItem.setKey(syncItem.getKey().getKeyAsString());
                 contactItem.setState(String.valueOf(syncItem.getState()));
 
@@ -510,7 +537,7 @@ public class ContactSyncSource extends AbstractSyncSource
 
             } else {
 
-                Contact contact = convert(content, contentType);
+                //Contact contact = convert(content, contentType);
 
                 JsonItem<Contact> contactItem = new JsonItem<Contact>();
                 contactItem.setItem(contact);
@@ -765,9 +792,15 @@ public class ContactSyncSource extends AbstractSyncSource
             String content = getContentFromSyncItem(syncItem);
             String contentType = syncItem.getType();
 
+            Contact contact = convert(content, contentType);
+            
+             //retrieve backend type
+            String backend = backendType.getPreferredType().getType();
+
             //if the backend requires items in vcard/ical formart
             if (vcardIcalBackend) {
-                String objRFC = content;
+                //String objRFC = content;
+                String objRFC = convert(contact, backend);
 
                 JsonItem<String> contactItem = new JsonItem<String>();
                 contactItem.setItem(objRFC);
@@ -777,7 +810,7 @@ public class ContactSyncSource extends AbstractSyncSource
                 keys = manager.getRFCItemKeysFromTwin(sessionID, contactItem);
 
             } else {
-                Contact contact = convert(content, contentType);
+                
 
                 JsonItem<Contact> contactItem = new JsonItem<Contact>();
                 contactItem.setItem(contact);

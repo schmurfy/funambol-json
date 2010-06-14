@@ -77,12 +77,15 @@ implements Serializable {
 
     private static final String TYPE_LABEL_SIFC  = "SIF-C";
     private static final String TYPE_LABEL_VCARD = "VCard";
+    private static final String TYPE_LABEL_JSON_EXT = "Json Extended";
 
     private static final String TYPE_SIFC  = "text/x-s4j-sifc";
     private static final String TYPE_VCARD = "text/x-vcard";
+    protected static final String TYPE_JSON_EXT = "text/jsonextended";
 
     private static final String VERSION_SIFC  = "1.0";
     private static final String VERSION_VCARD = "2.1";
+    private static final String VERSION_JSONEXT = "";
     
     private static final String PANEL_NAME = "Edit Contact SyncSource";
 
@@ -92,12 +95,14 @@ implements Serializable {
     private JLabel           nameLabel          = new JLabel()     ;
     private JTextField       nameValue          = new JTextField() ;
     private JLabel           typeLabel          = new JLabel()     ;
+    private JLabel           datastoretypeLabel = new JLabel();
     private JLabel           sourceUriLabel     = new JLabel()     ;
     private JTextField       sourceUriValue     = new JTextField() ;
     private JButton          confirmButton      = new JButton()    ;
     
     private TitledBorder titledBorder;
     private JComboBox typeCombo = new JComboBox();
+    private JComboBox datastoretypeCombo = new JComboBox();
 
     /**
      * Creates a new ContactSyncSourceAdminPanel instance
@@ -144,11 +149,18 @@ implements Serializable {
         nameValue.setBounds(new Rectangle(VALUE_X, y, 350, 18));
         y += GAP_Y; // New line
 
-        typeLabel.setText("Type: ");
+        typeLabel.setText("Client Type: ");
         typeLabel.setFont(defaultFont);
         typeLabel.setBounds(new Rectangle(LABEL_X, y, 150, 18));
         typeCombo.setFont(defaultFont);
         typeCombo.setBounds(new Rectangle(VALUE_X, y, 350, 18));
+        y += GAP_Y; // New line
+
+        datastoretypeLabel.setText("Datastore Type: ");
+        datastoretypeLabel.setFont(defaultFont);
+        datastoretypeLabel.setBounds(new Rectangle(LABEL_X, y, 150, 18));
+        datastoretypeCombo.setFont(defaultFont);
+        datastoretypeCombo.setBounds(new Rectangle(VALUE_X, y, 350, 18));
 
         y += GAP_Y; // New line
         int x = LABEL_X;
@@ -179,14 +191,16 @@ implements Serializable {
         });
 
         // Adds all components to the panel
-        this.add(panelName        , null);
-        this.add(nameLabel        , null);
-        this.add(sourceUriLabel   , null);
-        this.add(sourceUriValue   , null);
-        this.add(nameValue        , null);
-        this.add(typeLabel        , null);
-        this.add(typeCombo        , null);
-        this.add(confirmButton    , null);
+        this.add(panelName         , null);
+        this.add(nameLabel         , null);
+        this.add(sourceUriLabel    , null);
+        this.add(sourceUriValue    , null);
+        this.add(nameValue         , null);
+        this.add(typeLabel         , null);
+        this.add(typeCombo         , null);
+        this.add(confirmButton     , null);
+        this.add(datastoretypeLabel, null);
+        this.add(datastoretypeCombo, null);
 
     }
 
@@ -233,6 +247,22 @@ implements Serializable {
             typeCombo.setSelectedItem(typeToSelect);
         } else {
             typeCombo.setSelectedIndex(0);
+        }
+
+        // Preparing to populate the backend combo box...
+        datastoretypeCombo.removeAllItems();
+        types = getBackendTypes();
+        if (types == null) {
+            types = new ArrayList();
+        }
+        for (int i = 0; i < types.size(); i++) {
+            datastoretypeCombo.addItem(types.get(i));
+        }
+        typeToSelect = getBackendTypeToSelect(syncSource);
+        if (typeToSelect != null) {
+            datastoretypeCombo.setSelectedItem(typeToSelect);
+        } else {
+            datastoretypeCombo.setSelectedIndex(0);
         }
 
         SyncSourceManagementObject mo = (SyncSourceManagementObject)getManagementObject();
@@ -294,6 +324,8 @@ implements Serializable {
         mo.setTransformationsRequired(transformationsRequired);
 
         setSyncSourceInfo(syncSource, (String)typeCombo.getSelectedItem());
+
+        setBackendSyncSourceInfo(syncSource, (String) datastoretypeCombo.getSelectedItem());
     }
     
     /**
@@ -311,6 +343,17 @@ implements Serializable {
     private List getTypes() {
         List supportedTypes = new ArrayList();
         supportedTypes.add(TYPE_LABEL_SIFC);
+        supportedTypes.add(TYPE_LABEL_VCARD);
+        return supportedTypes;
+    }
+
+     /**
+     * Returns the available types
+     * @return the available types;
+     */
+    private List getBackendTypes() {
+        List supportedTypes = new ArrayList();
+        supportedTypes.add(TYPE_LABEL_JSON_EXT);
         supportedTypes.add(TYPE_LABEL_VCARD);
         return supportedTypes;
     }
@@ -334,9 +377,33 @@ implements Serializable {
         }
         return null;
     }
+
+     /**
+     * Returns the type to select based on the given syncsource
+     * @return the type to select based on the given syncsource
+     */
+    private String getBackendTypeToSelect(SyncSource syncSource) {
+        String preferredType = null;
+        ContactSyncSource pimSource = (ContactSyncSource) syncSource;
+        if (pimSource.getBackendType() != null
+                && pimSource.getBackendType().getPreferredType() != null) {
+
+            preferredType = pimSource.getBackendType().getPreferredType().getType();
+            if (TYPE_VCARD.equals(preferredType)) {
+                return TYPE_LABEL_VCARD;
+            }
+            if (TYPE_SIFC.equals(preferredType)) {
+                return TYPE_LABEL_SIFC;
+            }
+            if (TYPE_SIFC.equals(preferredType)) {
+                return TYPE_LABEL_JSON_EXT;
+            }
+        }
+        return null;
+    }
     
     /**
-     * Sets the source info of the given syncsource based on the given selectedType
+     * Sets the backend source info of the given syncsource based on the given selectedType
      */
     public void setSyncSourceInfo(SyncSource syncSource, String selectedType) {
         ContactSyncSource pimSource = (ContactSyncSource)syncSource;
@@ -350,5 +417,25 @@ implements Serializable {
         }
 
         pimSource.setInfo(new SyncSourceInfo(contentTypes, 0));
+    }
+
+    /**
+     * Sets the backend source info of the given syncsource based on the given selectedType
+     */
+    public void setBackendSyncSourceInfo(SyncSource syncSource, String selectedType) {
+        ContactSyncSource pimSource = (ContactSyncSource) syncSource;
+        ContentType[] contentTypes = null;
+        if (TYPE_LABEL_SIFC.equals(selectedType)) {
+            contentTypes = new ContentType[1];
+            contentTypes[0] = new ContentType(TYPE_SIFC, VERSION_SIFC);
+        } else if (TYPE_LABEL_VCARD.equals(selectedType)) {
+            contentTypes = new ContentType[1];
+            contentTypes[0] = new ContentType(TYPE_VCARD, VERSION_VCARD);
+        }
+        else if (TYPE_LABEL_JSON_EXT.equals(selectedType)) {
+            contentTypes = new ContentType[1];
+            contentTypes[0] = new ContentType(TYPE_JSON_EXT, VERSION_JSONEXT);
+        }
+        pimSource.setBackendType(new SyncSourceInfo(contentTypes, 0));
     }
 }

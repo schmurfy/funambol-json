@@ -32,8 +32,7 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Powered by Funambol".
  */
- package com.funambol.json.engine.source;
-
+package com.funambol.json.engine.source;
 
 import java.sql.Timestamp;
 import net.sf.json.JSONObject;
@@ -65,10 +64,9 @@ import com.funambol.json.util.Utility;
 import java.util.TimeZone;
 
 public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
-    
+
     private static JsonServlet jsonServlet = new JsonServlet();
 
-    
     public AppointmentSyncSourceTest() {
         super(jsonServlet);
     }
@@ -76,18 +74,23 @@ public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        
+
     }
-    
+
     /**
      * 
      * @throws Exception
      */
     public void test_Add() throws Exception {
-        
+
         CalendarSyncSource source = createAppointmentSyncSource();
 
-        SyncContext context = createContext();        
+        SyncContext context = createContext();
+
+        ContentType[] contentTypes = null;
+        contentTypes = new ContentType[1];
+        contentTypes[0] = new ContentType("text/x-s4j-sifc", "1.0");
+        source.setBackendType(new SyncSourceInfo(contentTypes, 0));
 
         source.init();
 
@@ -95,156 +98,158 @@ public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
 
         jsonServlet.setDoReturn(JsonServlet.ITEMS);
 
-        String sife = 
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?><appointment>" +
-            "<Subject>Ten past ten to quarter past eleven in the morning (UTC)</Subject>" +
-            "<Location>London</Location><Start>20080320T101000Z</Start><End>20080320T111500Z</End>" +
-            "<Folder>Appointment</Folder></appointment>";
-    
-        String sifeUpdate = 
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?><appointment>" +
-            "<Subject>Updated Ten past ten to quarter past eleven in the morning (UTC)</Subject>" +
-            "<Location>London updated</Location><Start>20080320T101000ZUP</Start><End>20080320T111500ZUP</End>" +
-            "<Folder>Appointment</Folder></appointment>";
-        
-        
+        String sife =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><appointment>"
+                + "<Subject>Ten past ten to quarter past eleven in the morning (UTC)</Subject>"
+                + "<Location>London</Location><Start>20080320T101000Z</Start><End>20080320T111500Z</End>"
+                + "<Folder>Appointment</Folder></appointment>";
+
+        String sifeUpdate =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><appointment>"
+                + "<Subject>Updated Ten past ten to quarter past eleven in the morning (UTC)</Subject>"
+                + "<Location>London updated</Location><Start>20080320T101000ZUP</Start><End>20080320T111500ZUP</End>"
+                + "<Folder>Appointment</Folder></appointment>";
+
+
         try {
-            
+
             Object anyKey = String.valueOf(System.currentTimeMillis()); // dummy
-            
+
             SyncItem syncItem = new SyncItemImpl(source, anyKey, null, null,
-                    SyncItemState.NEW, 
-                    sife.getBytes(), 
+                    SyncItemState.NEW,
+                    sife.getBytes(),
                     null, "text/x-s4j-sife", null);
 
             SyncItemKey itemKey = source.addSyncItem(syncItem).getKey();
-            
+
             String guid = itemKey.getKeyAsString();
-            assertTrue(guid.equals(Utility.APPOINTMENT_OBJECT + Utility.GUID_SEP + "0" ));
-            
-            
-            SyncItem syncItem2 = new SyncItemImpl(source, guid, null, null, 
-                     SyncItemState.UPDATED, 
-                     sifeUpdate.getBytes(), 
-                     null,"text/x-s4j-sife", null);
-            
+            assertTrue(guid.equals(Utility.APPOINTMENT_OBJECT + Utility.GUID_SEP + "0"));
+
+
+            SyncItem syncItem2 = new SyncItemImpl(source, guid, null, null,
+                    SyncItemState.UPDATED,
+                    sifeUpdate.getBytes(),
+                    null, "text/x-s4j-sife", null);
+
             String guid2 = syncItem2.getKey().getKeyAsString();
-            assertTrue(guid2.equals(Utility.APPOINTMENT_OBJECT + Utility.GUID_SEP + "0" ));
-            
+            assertTrue(guid2.equals(Utility.APPOINTMENT_OBJECT + Utility.GUID_SEP + "0"));
+
             SyncItem syncItemUpdated = source.updateSyncItem(syncItem2);
             String guid3 = syncItemUpdated.getKey().getKeyAsString();
-            assertTrue(guid3.equals(Utility.APPOINTMENT_OBJECT + Utility.GUID_SEP + "0" ));
-            
+            assertTrue(guid3.equals(Utility.APPOINTMENT_OBJECT + Utility.GUID_SEP + "0"));
+
         } catch (SyncSourceException e) {
             e.printStackTrace();
             fail();
         }
-        
+
         jsonServlet.setDoReturn(JsonServlet.ENDSYNC);
         source.endSync();
     }
-        
+
     /**
      * 
      * @throws Exception
      */
     public void test_getRecurring() throws Exception {
-        
+
         CalendarSyncSource source = createAppointmentSyncSource();
 
-        SyncContext context = createContext();                
+        SyncContext context = createContext();
 
-        jsonServlet.setDoReturn(JsonServlet.EMPTY);        
+        jsonServlet.setDoReturn(JsonServlet.EMPTY);
+
+        ContentType[] contentTypes = null;
+        contentTypes = new ContentType[1];
+        contentTypes[0] = new ContentType("text/x-s4j-sifc", "1.0");
+        source.setBackendType(new SyncSourceInfo(contentTypes, 0));
 
         source.init();
 
         source.beginSync(context);
-        
-        jsonServlet.setDoReturn(JsonServlet.ITEMS);        
-                
-        String sife = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
-                    "<appointment>" +
-                    "<SIFVersion>1.1</SIFVersion>" +
-                    "<Subject>Daily</Subject>" +
-                    "<Location>Ogni 2 giorni</Location>" +
-                    "<Start>20081027T180000Z</Start>" +
-                    "<End>20081027T190000Z</End>" +
-                    "<MeetingStatus>0</MeetingStatus>" +
-                    "<ReminderMinutesBeforeStart>15</ReminderMinutesBeforeStart>" +
-                    "<ReminderOptions>4</ReminderOptions>" +
-                    "<ReminderSet>1</ReminderSet>" +
-                    "<Body/>" +
-                    "<Sensitivity>0</Sensitivity>" +
-                    "<BusyStatus>2</BusyStatus>" +
-                    "<Categories/>" +
-                    "<AllDayEvent>0</AllDayEvent>" +
 
-                    "<IsRecurring>1</IsRecurring>" +
-                    "<DayOfMonth>0</DayOfMonth>" +
-                    "<DayOfWeekMask>0</DayOfWeekMask>" +
-                    "<Instance>0</Instance>" +
-                    "<Interval>2</Interval>" +
-                    "<MonthOfYear>0</MonthOfYear>" +
-                    "<NoEndDate>0</NoEndDate>" +
-                    "<Occurrences>18</Occurrences>" +
-                    "<PatternEndDate>20081130T120000</PatternEndDate>" +
-                    "<PatternStartDate>20081027T120000</PatternStartDate>" +
-                    "<RecurrenceType>0</RecurrenceType>" +
-                    "<Exceptions/>" +
-                    
-                    "<Timezone>" +
-                    "<BasicOffset>-0600</BasicOffset>" +
-                    "<DayLight>" +
-                    "<DSTOffset>-0500</DSTOffset>" +
-                    "<DSTStart>20080406T020000</DSTStart><DSTEnd>20081026T020000</DSTEnd><StandardName/><DSTName/>" +
-                    "</DayLight>" +
-                    "</Timezone>" +
-                    
-                    "</appointment>" ;
-        
+        jsonServlet.setDoReturn(JsonServlet.ITEMS);
+
+        String sife = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<appointment>"
+                + "<SIFVersion>1.1</SIFVersion>"
+                + "<Subject>Daily</Subject>"
+                + "<Location>Ogni 2 giorni</Location>"
+                + "<Start>20081027T180000Z</Start>"
+                + "<End>20081027T190000Z</End>"
+                + "<MeetingStatus>0</MeetingStatus>"
+                + "<ReminderMinutesBeforeStart>15</ReminderMinutesBeforeStart>"
+                + "<ReminderOptions>4</ReminderOptions>"
+                + "<ReminderSet>1</ReminderSet>"
+                + "<Body/>"
+                + "<Sensitivity>0</Sensitivity>"
+                + "<BusyStatus>2</BusyStatus>"
+                + "<Categories/>"
+                + "<AllDayEvent>0</AllDayEvent>"
+                + "<IsRecurring>1</IsRecurring>"
+                + "<DayOfMonth>0</DayOfMonth>"
+                + "<DayOfWeekMask>0</DayOfWeekMask>"
+                + "<Instance>0</Instance>"
+                + "<Interval>2</Interval>"
+                + "<MonthOfYear>0</MonthOfYear>"
+                + "<NoEndDate>0</NoEndDate>"
+                + "<Occurrences>18</Occurrences>"
+                + "<PatternEndDate>20081130T120000</PatternEndDate>"
+                + "<PatternStartDate>20081027T120000</PatternStartDate>"
+                + "<RecurrenceType>0</RecurrenceType>"
+                + "<Exceptions/>"
+                + "<Timezone>"
+                + "<BasicOffset>-0600</BasicOffset>"
+                + "<DayLight>"
+                + "<DSTOffset>-0500</DSTOffset>"
+                + "<DSTStart>20080406T020000</DSTStart><DSTEnd>20081026T020000</DSTEnd><StandardName/><DSTName/>"
+                + "</DayLight>"
+                + "</Timezone>"
+                + "</appointment>";
+
         try {
-        
+
             // add a recurring appoint to the repository
-             Object anyKey = String.valueOf(System.currentTimeMillis()); // dummy
-             SyncItem syncItem = new SyncItemImpl(source, 
-                                                  anyKey, 
-                                                  null, 
-                                                  null, 
-                                                  SyncItemState.NEW, 
-                                                  sife.getBytes(), 
-                                                  null, 
-                                                  "text/x-s4j-sife", 
-                                                  null);
-        
+            Object anyKey = String.valueOf(System.currentTimeMillis()); // dummy
+            SyncItem syncItem = new SyncItemImpl(source,
+                    anyKey,
+                    null,
+                    null,
+                    SyncItemState.NEW,
+                    sife.getBytes(),
+                    null,
+                    "text/x-s4j-sife",
+                    null);
+
             SyncItemKey itemKey = source.addSyncItem(syncItem).getKey();
-                        
+
             SyncItem item = source.getSyncItemFromId(itemKey);
-            
+
             byte[] itemContent = item.getContent();
             String content = new String(itemContent == null ? new byte[0] : itemContent);
-            
+
             Calendar cal = source.sif2Calendar(content);
-            
+
             Event e = cal.getEvent();
-            
+
             //System.out.println(" .... timezone " + e.getDtStart().getTimeZone());
-            
+
             // TMP
             // until the backend sets th tzid = U.I. timezome in the json object
             assertEquals("America/Mexico_City", e.getDtStart().getTimeZone());
             //assertEquals("America/Chicago", e.getDtStart().getTimeZone());
 
-                     
+
         } catch (SyncSourceException e) {
             e.printStackTrace();
             fail();
         }
-        
+
         jsonServlet.setDoReturn(JsonServlet.ENDSYNC);
         source.endSync();
-        
-    }    
-      
+
+    }
+
     /**
      * Note: this SIF is not correct;
      * 
@@ -252,129 +257,130 @@ public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
      * @throws Exception
      */
     public void test_getRecurring_without_TZ() throws Exception {
-        
+
         CalendarSyncSource source = createAppointmentSyncSource();
-        
-        SyncContext context = createContext();        
-        
-        jsonServlet.setDoReturn(JsonServlet.EMPTY);        
+
+        SyncContext context = createContext();
+
+        jsonServlet.setDoReturn(JsonServlet.EMPTY);
+
+        ContentType[] contentTypes = null;
+        contentTypes = new ContentType[1];
+        contentTypes[0] = new ContentType("text/x-s4j-sifc", "1.0");
+        source.setBackendType(new SyncSourceInfo(contentTypes, 0));
 
         source.init();
-        
-        source.beginSync(context);
-        
-        jsonServlet.setDoReturn(JsonServlet.ITEMS);        
-                
-        String sife = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
-                    "<appointment>" +
-                    "<SIFVersion>1.1</SIFVersion>" +
-                    "<Subject>Daily</Subject>" +
-                    "<Location>Ogni 2 giorni</Location>" +
-                    "<Start>20081027T180000Z</Start>" +
-                    "<End>20081027T190000Z</End>" +
-                    "<MeetingStatus>0</MeetingStatus>" +
-                    "<ReminderMinutesBeforeStart>15</ReminderMinutesBeforeStart>" +
-                    "<ReminderOptions>4</ReminderOptions>" +
-                    "<ReminderSet>1</ReminderSet>" +
-                    "<Body/>" +
-                    "<Sensitivity>0</Sensitivity>" +
-                    "<BusyStatus>2</BusyStatus>" +
-                    "<Categories/>" +
-                    "<AllDayEvent>0</AllDayEvent>" +
 
-                    "<IsRecurring>1</IsRecurring>" +
-                    "<DayOfMonth>0</DayOfMonth>" +
-                    "<DayOfWeekMask>0</DayOfWeekMask>" +
-                    "<Instance>0</Instance>" +
-                    "<Interval>2</Interval>" +
-                    "<MonthOfYear>0</MonthOfYear>" +
-                    "<NoEndDate>0</NoEndDate>" +
-                    "<Occurrences>18</Occurrences>" +
-                    "<PatternEndDate>20081130T120000</PatternEndDate>" +
-                    "<PatternStartDate>20081027T120000</PatternStartDate>" +
-                    "<RecurrenceType>0</RecurrenceType>" +
-                    "<Exceptions/>" +
-                                        
-                    "</appointment>" ;
-        
+        source.beginSync(context);
+
+        jsonServlet.setDoReturn(JsonServlet.ITEMS);
+
+        String sife = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<appointment>"
+                + "<SIFVersion>1.1</SIFVersion>"
+                + "<Subject>Daily</Subject>"
+                + "<Location>Ogni 2 giorni</Location>"
+                + "<Start>20081027T180000Z</Start>"
+                + "<End>20081027T190000Z</End>"
+                + "<MeetingStatus>0</MeetingStatus>"
+                + "<ReminderMinutesBeforeStart>15</ReminderMinutesBeforeStart>"
+                + "<ReminderOptions>4</ReminderOptions>"
+                + "<ReminderSet>1</ReminderSet>"
+                + "<Body/>"
+                + "<Sensitivity>0</Sensitivity>"
+                + "<BusyStatus>2</BusyStatus>"
+                + "<Categories/>"
+                + "<AllDayEvent>0</AllDayEvent>"
+                + "<IsRecurring>1</IsRecurring>"
+                + "<DayOfMonth>0</DayOfMonth>"
+                + "<DayOfWeekMask>0</DayOfWeekMask>"
+                + "<Instance>0</Instance>"
+                + "<Interval>2</Interval>"
+                + "<MonthOfYear>0</MonthOfYear>"
+                + "<NoEndDate>0</NoEndDate>"
+                + "<Occurrences>18</Occurrences>"
+                + "<PatternEndDate>20081130T120000</PatternEndDate>"
+                + "<PatternStartDate>20081027T120000</PatternStartDate>"
+                + "<RecurrenceType>0</RecurrenceType>"
+                + "<Exceptions/>"
+                + "</appointment>";
+
         try {
-        
+
             // add a recurring appointment to the repository
             Object anyKey = String.valueOf(System.currentTimeMillis()); // dummy
-            SyncItem syncItem = new SyncItemImpl(source, 
-                                                  anyKey, 
-                                                  null, 
-                                                  null, 
-                                                  SyncItemState.NEW, 
-                                                  sife.getBytes(), 
-                                                  null, 
-                                                  "text/x-s4j-sife", 
-                                                  null);
-        
+            SyncItem syncItem = new SyncItemImpl(source,
+                    anyKey,
+                    null,
+                    null,
+                    SyncItemState.NEW,
+                    sife.getBytes(),
+                    null,
+                    "text/x-s4j-sife",
+                    null);
+
             SyncItemKey itemKey = source.addSyncItem(syncItem).getKey();
-                        
+
             SyncItem item = source.getSyncItemFromId(itemKey);
-            
+
             byte[] itemContent = item.getContent();
             String content = new String(itemContent == null ? new byte[0] : itemContent);
-            
+
             Calendar cal = source.sif2Calendar(content);
             Event e = cal.getEvent();
             //System.out.println(" .... timezone " + e.getDtStart().getTimeZone());
             //assertEquals("America/Chicago", e.getDtStart().getTimeZone());
             assertEquals(null, e.getDtStart().getTimeZone());
-                                    
+
         } catch (SyncSourceException e) {
             e.printStackTrace();
             fail();
         }
-        
+
         jsonServlet.setDoReturn(JsonServlet.ENDSYNC);
         source.endSync();
-        
-    }    
-    
-    
-    
+
+    }
+
     /**
      * "IMPORTANCE" for appointment is saved in the "Priority" property
      * 
      * @throws java.lang.Exception
      */
     public void test_Importance() throws Exception {
-        
+
         CalendarSyncSource source = createAppointmentSyncSource();
-                
-        String xml = 
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                "<appointment>" +
-                "<SIFVersion>1.1</SIFVersion>" +
-                "<AllDayEvent>0</AllDayEvent>" +
-                "<BillingInformation/>" +
-                "<Body>note per item 1 3</Body>" +
-                "<BusyStatus>2</BusyStatus>" +
-                "<Categories/>" +
-                "<Companies/>" +
-                "<End>20081126T233000Z</End>" +
-                "<Folder>DEFAULT_FOLDER</Folder>" +
-                "<Importance>2</Importance>" +
-                "<IsRecurring>0</IsRecurring>" +
-                "<Location>location3</Location>" +
-                "<MeetingStatus>0</MeetingStatus>" +
-                "<Mileage/>" +
-                "<NoAging>0</NoAging>" +
-                "<ReminderMinutesBeforeStart>15</ReminderMinutesBeforeStart>" +
-                "<ReminderSet>1</ReminderSet>" +
-                "<ReminderSoundFile/>" +
-                "<ReplyTime/>" +
-                "<Sensitivity>0</Sensitivity>" +
-                "<Start>20081126T230000Z</Start>" +
-                "<Subject>item1</Subject>" +
-                "</appointment>" ;
-                        
-        
+
+        String xml =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<appointment>"
+                + "<SIFVersion>1.1</SIFVersion>"
+                + "<AllDayEvent>0</AllDayEvent>"
+                + "<BillingInformation/>"
+                + "<Body>note per item 1 3</Body>"
+                + "<BusyStatus>2</BusyStatus>"
+                + "<Categories/>"
+                + "<Companies/>"
+                + "<End>20081126T233000Z</End>"
+                + "<Folder>DEFAULT_FOLDER</Folder>"
+                + "<Importance>2</Importance>"
+                + "<IsRecurring>0</IsRecurring>"
+                + "<Location>location3</Location>"
+                + "<MeetingStatus>0</MeetingStatus>"
+                + "<Mileage/>"
+                + "<NoAging>0</NoAging>"
+                + "<ReminderMinutesBeforeStart>15</ReminderMinutesBeforeStart>"
+                + "<ReminderSet>1</ReminderSet>"
+                + "<ReminderSoundFile/>"
+                + "<ReplyTime/>"
+                + "<Sensitivity>0</Sensitivity>"
+                + "<Start>20081126T230000Z</Start>"
+                + "<Subject>item1</Subject>"
+                + "</appointment>";
+
+
         Calendar calendar = source.sif2Calendar(xml);
-                                
+
         // there is the FOUNDATION converter that  
         assertEquals("1", calendar.getEvent().getPriority().getPropertyValueAsString());
 
@@ -383,25 +389,25 @@ public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
         item.setKey("0");
         item.setState("A");
         item.setItem(calendar.getEvent());
-            
+
         AppointmentConverter converter = new AppointmentConverter();
-            
+
         String jsonResult = converter.toJSON(item);
-        
+
         JSONObject jsonRoot = JSONObject.fromObject(jsonResult);
         JSONObject jsonData = jsonRoot.getJSONObject("data");
         JSONObject jsonItem = jsonData.getJSONObject("item");
 
 
         String imp = Utility.getJsonValue(jsonItem, "importance");
-        
-         // high = 2
-         // normal = 1
-         // low = 0       
+
+        // high = 2
+        // normal = 1
+        // low = 0
         assertEquals("2", imp);
-        
+
     }
-    
+
     /**
      * "IMPORTANCE" for appointment is saved in the "Priority" property
      *
@@ -415,33 +421,33 @@ public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
         String ICAL_FORMAT = "text/calendar";
 
         String vcal =
-                "BEGIN:VCALENDAR\n"+
-                "VERSION:1.0\n"+
-                "BEGIN:VEVENT\n"+
-                "UID:bC8MS7CB4EDme46ibFFgh2\n"+
-                "SUMMARY:Bring luggage for ross\n"+
-                "DTSTART:20080908T063000Z\n"+
-                "DTEND:20080908T063000Z\n"+
-                "X-EPOCAGENDAENTRYTYPE:APPOINTMENT\n"+
-                "CLASS:PRIVATE\n"+
-                "X-SYMBIAN-DTSTAMP:20080908T081313Z\n"+
-                "SEQUENCE:0\n"+
-                "X-METHOD:NONE\n"+
-                "ATTENDEE;ROLE=ORGANIZER;STATUS=NEEDS ACTION;RSVP=NO;EXPECT=FYI;X-CN=Shannon Carver;ENCODING=QUOTED-PRINTABLE:=\n"+
-                "Shannon.Carver=40mistermind.com\n"+
-                "LAST-MODIFIED:20080908T081513Z\n"+
-                "PRIORITY:0\n"+
-                "X-SYMBIAN-LUID:172\n"+
-                "DESCRIPTION:\n"+
-                "RRULE:\n"+
-                "ORGANIZER:\n"+
-                "AALARM:;;;\n"+
-                "LOCATION:\n"+
-                "END:VEVENT\n"+
-                "END:VCALENDAR";
+                "BEGIN:VCALENDAR\n"
+                + "VERSION:1.0\n"
+                + "BEGIN:VEVENT\n"
+                + "UID:bC8MS7CB4EDme46ibFFgh2\n"
+                + "SUMMARY:Bring luggage for ross\n"
+                + "DTSTART:20080908T063000Z\n"
+                + "DTEND:20080908T063000Z\n"
+                + "X-EPOCAGENDAENTRYTYPE:APPOINTMENT\n"
+                + "CLASS:PRIVATE\n"
+                + "X-SYMBIAN-DTSTAMP:20080908T081313Z\n"
+                + "SEQUENCE:0\n"
+                + "X-METHOD:NONE\n"
+                + "ATTENDEE;ROLE=ORGANIZER;STATUS=NEEDS ACTION;RSVP=NO;EXPECT=FYI;X-CN=Shannon Carver;ENCODING=QUOTED-PRINTABLE:=\n"
+                + "Shannon.Carver=40mistermind.com\n"
+                + "LAST-MODIFIED:20080908T081513Z\n"
+                + "PRIORITY:0\n"
+                + "X-SYMBIAN-LUID:172\n"
+                + "DESCRIPTION:\n"
+                + "RRULE:\n"
+                + "ORGANIZER:\n"
+                + "AALARM:;;;\n"
+                + "LOCATION:\n"
+                + "END:VEVENT\n"
+                + "END:VCALENDAR";
 
 
-        Calendar calendar = UtilitySyncSource.webCalendar2Calendar(vcal,VCAL_FORMAT, TimeZone.getTimeZone("GMT"), "UTF-8");
+        Calendar calendar = UtilitySyncSource.webCalendar2Calendar(vcal, VCAL_FORMAT, TimeZone.getTimeZone("GMT"), "UTF-8");
 
         // there is the FOUNDATION converter that
         assertEquals("0", calendar.getEvent().getPriority().getPropertyValueAsString());
@@ -463,52 +469,48 @@ public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
 
         String imp = Utility.getJsonValue(jsonItem, "importance");
 
-         // high = 2
-         // normal = 1
-         // low = 0
+        // high = 2
+        // normal = 1
+        // low = 0
         assertEquals("2", imp);
 
     }
-    
-    
-    
+
     //---------------------------------------------------------- Private Methods
-    
- 
     /**
      * 
      * 
      */
-    private CalendarSyncSource createAppointmentSyncSource(){
-        
+    private CalendarSyncSource createAppointmentSyncSource() {
+
         CalendarSyncSource source = new CalendarSyncSource();
-        
+
         SyncSourceInfo ssi = new SyncSourceInfo();
         ContentType[] contentType = new ContentType[1];
-        contentType[0] = new ContentType("text/x-s4j-sife","1.0");        
+        contentType[0] = new ContentType("text/x-s4j-sife", "1.0");
         ssi.setSupportedTypes(contentType);
         source.setInfo(ssi);
-        
+
         source.setEntityType(Event.class);
-        
+
         return source;
     }
-    
+
     /**
      * 
      */
-    private SyncContext createContext(){
+    private SyncContext createContext() {
         // Cred credentials = new Cred(authentication);
         JsonUser user = new JsonUser("pippo", "pippo");
         Sync4jDevice device = new Sync4jDevice("deviceID");
-        Sync4jPrincipal principal = new Sync4jPrincipal(user, device);        
-        SyncContext context = new SyncContext(principal, 
-                                  200, 
-                                  null, 
-                                  "localhost", 
-                                  2, 
-                                  new Timestamp(System.currentTimeMillis()),
-                                  new Timestamp(System.currentTimeMillis()));     
+        Sync4jPrincipal principal = new Sync4jPrincipal(user, device);
+        SyncContext context = new SyncContext(principal,
+                200,
+                null,
+                "localhost",
+                2,
+                new Timestamp(System.currentTimeMillis()),
+                new Timestamp(System.currentTimeMillis()));
         return context;
     }
 
@@ -536,7 +538,7 @@ public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
         SyncContext context = new SyncContext(
                 principal, 200, null, "localhost", 2);
 
-        CTInfo[] rxs = new CTInfo[] {
+        CTInfo[] rxs = new CTInfo[]{
             new CTInfo(CalendarSyncSource.TYPE[CalendarSyncSource.SIFE_FORMAT], "1.0"),
             new CTInfo(CalendarSyncSource.TYPE[CalendarSyncSource.VCAL_FORMAT], "1.0")
         };
@@ -549,7 +551,7 @@ public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
                 new SyncCap());
 
         principal.getDevice().getCapabilities().getDevInf().setDataStores(
-                new DataStore[] { dataStorePreferSifContact });
+                new DataStore[]{dataStorePreferSifContact});
 
         String actual = source.findRXContentType(context);
         assertEquals(CalendarSyncSource.TYPE_ANYSIF, actual);
@@ -561,10 +563,9 @@ public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
                 new SyncCap());
 
         principal.getDevice().getCapabilities().getDevInf().setDataStores(
-                new DataStore[] { dataStorePreferVCard });
+                new DataStore[]{dataStorePreferVCard});
 
         actual = source.findRXContentType(context);
         assertEquals(CalendarSyncSource.TYPE[CalendarSyncSource.VCAL_FORMAT], actual);
     }
-
 }

@@ -4,8 +4,6 @@
   		<void property="jsonServerUrl">
   			<string>http://localhost:9292/syncapi</string>
   		</void>
-      <void property="vcardIcalBackend">
-          <boolean>false</boolean>
-      </void>
+      
 	</object>
 </java>

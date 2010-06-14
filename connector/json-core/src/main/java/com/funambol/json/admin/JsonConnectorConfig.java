@@ -60,43 +60,7 @@ public class JsonConnectorConfig {
     public void setJsonServerUrl(String jsonServerUrl) {
         this.jsonServerUrl = jsonServerUrl;
     }
-    /**
-     * the backend uses the vcard-vcal/ical objects
-     */
-    private boolean vcardIcalBackend;
-
-    /**
-     * @return the vcardIcalBackend
-     */
-    public boolean getVcardIcalBackend() {
-        return vcardIcalBackend;
-    }
-
-    /**
-     * @param vcardIcalBackend the vcardIcalBackend to set
-     */
-    public void setVcardIcalBackend(boolean vcardIcalBackend) {
-        this.vcardIcalBackend = vcardIcalBackend;
-    }
-    /**
-     * the backend expects vcal objects
-     */
-    private boolean vcalFormat;
-
-    /**
-     * @return the vcalFormat
-     */
-    public boolean getVcalFormat() {
-        return vcalFormat;
-    }
-
-    /**
-     * @param vcardIcalBackend the vcalFormat to set
-     */
-    public void setVcalFormat(boolean vcalFormat) {
-        this.vcalFormat = vcalFormat;
-    }
-
+    
     private boolean stopSyncOnFatalError;
 
     public boolean getStopSyncOnFatalError() {

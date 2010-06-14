@@ -52,6 +52,7 @@ import com.funambol.framework.engine.source.AbstractSyncSource;
 import com.funambol.framework.engine.source.MergeableSyncSource;
 import com.funambol.framework.engine.source.SyncContext;
 import com.funambol.framework.engine.source.SyncSourceException;
+import com.funambol.framework.engine.source.SyncSourceInfo;
 import com.funambol.framework.logging.FunambolLogger;
 import com.funambol.framework.logging.FunambolLoggerFactory;
 import com.funambol.framework.security.Sync4jPrincipal;
@@ -108,6 +109,8 @@ public class NoteSyncSource extends AbstractSyncSource
     //specifies if the sync source should catch a backend server internal error
     private boolean stopSyncOnFatalError = false;
 
+    private SyncSourceInfo backendType;
+
     private Sync4jPrincipal principal;    
     private String username;
     private String sessionID;
@@ -117,7 +120,15 @@ public class NoteSyncSource extends AbstractSyncSource
     protected String serverTimeZoneID = null;           
     
     private TimeZone deviceTimeZone = null;
-    
+
+    public SyncSourceInfo getBackendType() {
+        return backendType;
+    }
+
+    public void setBackendType(SyncSourceInfo backendType) {
+        this.backendType = backendType;
+    }
+
     public TimeZone getDeviceTimeZone() {
         return deviceTimeZone;
     }
