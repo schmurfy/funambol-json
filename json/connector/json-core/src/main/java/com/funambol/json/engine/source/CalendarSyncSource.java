@@ -713,21 +713,31 @@ public class CalendarSyncSource extends AbstractSyncSource
 
             CalendarSyncSourceStrategy strategy = CalendarStrategyFactory.getById(strategies, guid);
 
+            JsonItem<CalendarContent> item = strategy.getExtendedItem(sessionID, guid);
+             //retrieve backend type
+            String backend = backendType.getPreferredType().getType();
 
             //if the backend requires items in vcard/ical formart
             if (vcalIcalBackend) {
-                JsonItem<String> item = strategy.getRFCItem(sessionID, guid);
+                //JsonItem<String> item = strategy.getRFCItem(sessionID, guid);
+
+                JsonItem<String> calendarItem = new JsonItem<String>();
+                Calendar calendar = new Calendar();
+                calendar.setCalendarContent(item.getItem());
+                String objRFC = convertCalendarToBackendRFC(calendar,backend);//convert(contactItem.getItem(), backend);
+                calendarItem.setItem(objRFC);
+
                 //converts from ical to vcal or vice versa (if needed)
-                item.setItem(convertFromServerRFCToClientFormat(item.getItem()));
+                //item.setItem(convertFromServerRFCToClientFormat(item.getItem()));
 
                 if (item != null) {
                     char status = ' ';
                     // @todo
                     //status = item.getState().charAt(0);
-                    syncItem = createSyncItem(guid, item.getItem(), status);
+                    syncItem = createSyncItem(guid, calendarItem.getItem(), status);
                 }
             } else {
-                JsonItem<CalendarContent> item = strategy.getExtendedItem(sessionID, guid);
+                //JsonItem<CalendarContent> item = strategy.getExtendedItem(sessionID, guid);
                 if (item != null) {
                     Calendar calendar = new Calendar();
                     calendar.setCalendarContent(item.getItem());
