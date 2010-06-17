@@ -4,9 +4,6 @@
         <void property="jsonServerUrl">
             <string>http://localhost:8080/syncapi</string>
         </void>
-        <void property="vcardIcalBackend">
-            <boolean>false</boolean>
-        </void>
         <void property="stopSyncOnFatalError">
             <boolean>false</boolean>
         </void>
