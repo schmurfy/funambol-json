@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_16" class="java.beans.XMLDecoder"> 
+ <object class="com.funambol.json.engine.source.CalendarSyncSource"> 
+  <void property="backendType"> 
+   <object class="com.funambol.framework.engine.source.SyncSourceInfo"> 
+    <void property="supportedTypes"> 
+     <array class="com.funambol.framework.engine.source.ContentType" length="1"> 
+      <void index="0"> 
+       <object class="com.funambol.framework.engine.source.ContentType"> 
+        <void property="type"> 
+         <string>text/jsonextended</string> 
+        </void> 
+        <void property="version"> 
+         <string></string> 
+        </void> 
+       </object> 
+      </void> 
+     </array> 
+    </void> 
+   </object> 
+  </void> 
+  <void property="entityType"> 
+   <class>com.funambol.common.pim.calendar.Task</class> 
+  </void> 
+  <void property="info"> 
+   <object class="com.funambol.framework.engine.source.SyncSourceInfo"> 
+    <void property="supportedTypes"> 
+     <array class="com.funambol.framework.engine.source.ContentType" length="2"> 
+      <void index="0"> 
+       <object class="com.funambol.framework.engine.source.ContentType"> 
+        <void property="type"> 
+         <string>text/x-vcalendar</string> 
+        </void> 
+        <void property="version"> 
+         <string>1.0</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void index="1"> 
+       <object class="com.funambol.framework.engine.source.ContentType"> 
+        <void property="type"> 
+         <string>text/calendar</string> 
+        </void> 
+        <void property="version"> 
+         <string>2.0</string> 
+        </void> 
+       </object> 
+      </void> 
+     </array> 
+    </void> 
+   </object> 
+  </void> 
+  <void property="name"> 
+   <string>task</string> 
+  </void> 
+  <void property="sourceURI"> 
+   <string>task</string> 
+  </void> 
+ </object> 
+</java> 

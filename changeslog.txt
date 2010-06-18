@@ -1,8 +1,15 @@
+2010-06-18
+- gazza: bug #9432 - json connector installation overwrites sync source configuration
+        The jaon connector now does not create syncsource by default
+
 2010-06-14
 - sinopoli: 7867 - preferred-content-type is not respected 
-            Removed the mime type from the response to the beginSync, in the documentation and in the code.
-            Deleted the parameter vardIcalBackend in the admin panel and in jsconnector.xml file.
-            Added a datastore type parameter in the admin panel and in each sync source.
+            Removed the mime type from the response to the beginSync, in the
+            documentation and in the code.
+            Deleted the parameter vardIcalBackend in the admin panel and in
+            jsconnector.xml file.
+            Added a datastore type parameter in the admin panel and in each
+            sync source.
             Updated unit test and api testing tool.  	
 2010-06-08
 - derose:
