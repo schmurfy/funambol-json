@@ -121,12 +121,12 @@ public class JsonConnectorConfigPanel
         behaviourOnErrorsPanel.add(stopSyncOnFatalError);
 
         add(behaviourOnErrorsPanel);
-        behaviourOnErrorsPanel.setBounds(10, 170, 380, 60);
+        behaviourOnErrorsPanel.setBounds(10, 130, 380, 60);
 
         confirmButton.setFont(defaultFont);
         confirmButton.setText("Save");
         add(confirmButton);
-        confirmButton.setBounds(160, 250, 70, 25);
+        confirmButton.setBounds(160, 200, 70, 25);
 
         confirmButton.addActionListener(new ActionListener() {
 
