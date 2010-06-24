@@ -411,12 +411,27 @@ public class ContactSyncSource extends AbstractSyncSource
 
             Contact contact = convert(content, contentType);
 
-            //if the backend requires items in vcard/ical formart
-
             //retrieve backend type
             String backend = backendType.getPreferredType().getType();
 
-
+            // Checking if at least one field used for the twin search in the
+            // contact we are adding contains meaningful data, otherwise the
+            // add operation is not allowed since there's no way to prevent
+            // duplication.
+            Contact contactTwin = convert(content, contentType);
+            JsonItem<Contact> contactForSearch = new JsonItem<Contact>();
+            contactForSearch.setItem(contactTwin);
+            if (!manager.isTwinSearchAppliableOn(contactForSearch)) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Rejecting add of contact with key ["
+                            + ((syncItem != null && syncItem.getKey() != null)
+                            ? syncItem.getKey().getKeyAsString() : "N/A") + "] since the contact doesn't contain any field "
+                            + "usable for the twin search.");
+                }
+                throw new SyncSourceException("Adding a contact without any field "
+                        + "usable for twin search set is not allowed.");
+            }
+            
             if (vcardIcalBackend) {
                 //String objRFC = content;
                 String objRFC = convert(contact, backend);
@@ -437,24 +452,6 @@ public class ContactSyncSource extends AbstractSyncSource
 
                 key = manager.addExtendedItem(sessionID, contactItem, since);
 
-            }
-
-            // Checking if at least one field used for the twin search in the
-            // contact we are adding contains meaningful data, otherwise the
-            // add operation is not allowed since there's no way to prevent
-            // duplication.
-            Contact contactTwin = convert(content, contentType);
-            JsonItem<Contact> contactForSearch = new JsonItem<Contact>();
-            contactForSearch.setItem(contactTwin);
-            if (!manager.isTwinSearchAppliableOn(contactForSearch)) {
-                if (log.isTraceEnabled()) {
-                    log.trace("Rejecting add of contact with key ["
-                            + ((syncItem != null && syncItem.getKey() != null)
-                            ? syncItem.getKey().getKeyAsString() : "N/A") + "] since the contact doesn't contain any field "
-                            + "usable for the twin search.");
-                }
-                throw new SyncSourceException("Adding a contact without any field "
-                        + "usable for twin search set is not allowed.");
             }
 
             if (key != null) {
@@ -488,7 +485,7 @@ public class ContactSyncSource extends AbstractSyncSource
             throw new SyncSourceException("Error adding the item " + syncItem, e);
         } catch (Exception e) {
             log.error("Error converting the json content");
-            throw new SyncSourceException("Error adding the item " + syncItem, e);
+            throw new SyncSourceException(e.getMessage(), e);
         }
     }
 

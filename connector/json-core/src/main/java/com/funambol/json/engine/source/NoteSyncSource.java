@@ -421,9 +421,7 @@ public class NoteSyncSource extends AbstractSyncSource
 
             noteItem.setState("N");
 
-            String GUID = manager.addExtendedItem(sessionID, noteItem, since);
-
-             // Checking if at least one field used for the twin search in the
+            // Checking if at least one field used for the twin search in the
             // note we are adding contains meaningful data, otherwise the
             // add operation is not allowed since there's no way to prevent
             // duplication.
@@ -441,6 +439,8 @@ public class NoteSyncSource extends AbstractSyncSource
                 throw new SyncSourceException("Adding a note without any field " +
                                                "usable for twin search set is not allowed.");
             }
+
+            String GUID = manager.addExtendedItem(sessionID, noteItem, since);
 
             SyncItemImpl newSyncItem = new SyncItemImpl(this, // syncSource
                     GUID, // key
@@ -469,7 +469,7 @@ public class NoteSyncSource extends AbstractSyncSource
             throw new SyncSourceException("Error adding the item " + syncInstance, e);
         } catch (Exception e) {
             log.error("Error converting the json content");
-            throw new SyncSourceException("Error adding the item " + syncInstance, e);
+            throw new SyncSourceException(e.getMessage(), e);
         }
     }
 
