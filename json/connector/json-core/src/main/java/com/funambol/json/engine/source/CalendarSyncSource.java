@@ -581,7 +581,7 @@ public class CalendarSyncSource extends AbstractSyncSource
             throw new SyncSourceException("Error adding the item " + syncItem, e);
         } catch (Exception e) {
             log.error("Error converting the json content");
-            throw new SyncSourceException("Error adding the item " + syncItem, e);
+            throw new SyncSourceException(e.getMessage(), e);
         }
     }
 
