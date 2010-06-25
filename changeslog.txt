@@ -1,3 +1,9 @@
+2010-06-25
+- derose: bug #7867
+          Completed the fix with the addition of configuration UI for the 
+          datastore type in the backend web UI, and modified Repository.java 
+          so that it respects the configuration parameter.
+
 2010-06-18
 - gazza: bug #9432 - json connector installation overwrites sync source configuration
         The jaon connector now does not create syncsource by default
