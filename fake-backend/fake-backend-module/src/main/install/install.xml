@@ -46,5 +46,14 @@
                        replace="/"
                        flags="g"/>
 
+        <!-- If it is installed on a cared, copy the needed jars -->
+        <copy todir="${ENV.J2EE_HOME}/webapps/syncapi/WEB-INF/lib" failonerror="false">
+            <fileset dir="${ENV.J2EE_HOME}/webapps/funambol/WEB-INF/lib/">
+                <include name="ext-service*.jar"/>
+                <include name="cared-db-*.jar"/>
+            </fileset>
+        </copy>
+
 </target>
 </project>
+
