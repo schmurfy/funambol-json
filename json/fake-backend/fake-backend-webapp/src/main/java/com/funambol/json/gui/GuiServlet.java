@@ -49,8 +49,10 @@ import com.funambol.json.gui.html.conversion.Converter;
 import com.funambol.json.security.JsonUser;
 import com.funambol.json.utility.Definitions;
 import com.funambol.json.utility.Util;
+import com.funambol.json.utility.ServletProperties;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -135,6 +137,13 @@ public class GuiServlet extends HttpServlet implements javax.servlet.Servlet {
     public final static String DATASOURCE = "DATASOURCE";
     public final static String UNKNOWN_VALUE = "???";
     private final static DateFormat dateFormatter = new SimpleDateFormat("yyyy.MM.dd  kk:mm.ss:SSS");
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        ServletProperties.setPath(this.getServletContext().getRealPath(Definitions.PROPERTIES_PATH));
+    }
+
 
     private String applyConversion(String group, String format, String notation, File file) throws IOException, Exception {
         String buffer = IOUtils.toString(new FileInputStream(file));
@@ -378,12 +387,6 @@ public class GuiServlet extends HttpServlet implements javax.servlet.Servlet {
                 Repository.customerUserid = true;
             }
 
-            if ("on".equals(request.getParameter("vcalical"))) {
-                Repository.icalVcal = true;
-            }
-
-
-
             if (Repository.login(new JsonUser((String) request.getParameter("username"), (String) request.getParameter("password"))) != null) {
                 request.getSession().setAttribute("username", request.getParameter("username"));
                 return doList(request);
@@ -468,10 +471,23 @@ public class GuiServlet extends HttpServlet implements javax.servlet.Servlet {
 
     private String doList(HttpServletRequest request) throws Exception {
         String group = getRequestData(request, GROUP, false);
+        String dataStoreTypeKey = group + "." + Definitions.DATASTORETYPE;
 
         if (group == null) {
             return doListAll(request);
         }
+
+        if (request.getMethod().equalsIgnoreCase("post")) {
+            String newDataStoreType = getRequestData(request, Definitions.DATASTORETYPE);
+            if (newDataStoreType == null) newDataStoreType = "";
+            
+            if (!newDataStoreType.equals("")) {
+                ServletProperties.getProperties().setProperty(dataStoreTypeKey, newDataStoreType);
+                ServletProperties.saveProperties();
+            }
+        }
+
+        String dataStoreType = ServletProperties.getProperties().getProperty(dataStoreTypeKey, "");
 
         String result = HTMLManager.getHtmlHeaderFor("Listing group [" + group + "]: <br>", true);
         Repository rep = new Repository((String) request.getSession().getAttribute("username"), TimeZone.getDefault(), "UTF-8");
@@ -512,6 +528,7 @@ public class GuiServlet extends HttpServlet implements javax.servlet.Servlet {
         result += "<p>";
 
         result += HTMLManager.addAction("addForm", "Add element", ADD, NameValuePair.parseFromStrings(STEP, PREPARE, GROUP, group), ParentTag.BOTH) + "<br>";
+        result += HTMLManager.getHtmlForDatastoreType(group, dataStoreType);
         result += HTMLManager.closePage(buildCommonFooter(request));
         return result;
     }
@@ -687,10 +704,9 @@ public class GuiServlet extends HttpServlet implements javax.servlet.Servlet {
         return "<FORM action=\"./gui?ACTION=LOGIN\" method=\"post\"><P>" +
                 "<LABEL for=\"username\">username: </LABEL><INPUT type=\"text\" name=\"username\"><BR>" +
                 "<LABEL for=\"password\">password: </LABEL><INPUT type=\"password\" name=\"password\"><BR>" +
-                "<INPUT TYPE=CHECKBOX NAME=\"vcalical\">behave as vcal/ical/vcard backend<BR>" +
                 "<INPUT TYPE=CHECKBOX NAME=\"customeruserid\">" +
-                "Return costumerid in login requests<br>" +
-                "(useful when costumer supports multiple aliases to the same user, <br>" +
+                "Return customerid in login requests<br>" +
+                "(useful when customer supports multiple aliases to the same user, <br>" +
                 "the connector will create the user in funambol database using the field returned as customeruserid, <br>" +
                 "witch will be send together with the session id if the login is successfull)<BR>" +
                 "<INPUT type=\"submit\" value=\"Send\"></P></FORM>" + "<br>" + message;

@@ -50,10 +50,6 @@ import com.funambol.foundation.items.model.ContactWrapper;
 import com.funambol.foundation.items.model.EntityWrapper;
 import com.funambol.foundation.items.model.NoteWrapper;
 
-
-
-
-
 import com.funambol.framework.filter.Clause;
 import com.funambol.framework.filter.LogicalClause;
 import com.funambol.framework.filter.WhereClause;
@@ -67,6 +63,7 @@ import com.funambol.json.domain.JsonItem;
 import com.funambol.json.engine.source.UtilitySyncSource;
 import com.funambol.json.security.JsonUser;
 import com.funambol.json.utility.Definitions;
+import com.funambol.json.utility.ServletProperties;
 import com.funambol.json.utility.Util;
 import com.funambol.server.admin.AdminException;
 import com.funambol.server.admin.DBUserManager;
@@ -96,7 +93,6 @@ public class Repository {
     private Map<String, PIMEntityManager> instance = new HashMap<String, PIMEntityManager>();
     private TimeZone deviceTZ = null;
     private String deviceCharset = null;
-    public static boolean icalVcal = false;
     private ArrayList<String> sources = null;
     private HashMap<String, String> sourceTypes = null;
     public static boolean customerUserid = false;
@@ -425,16 +421,25 @@ public class Repository {
     }
 
     private FakeJsonItem getJsonFromContact(ContactWrapper contact, String group, long since) throws Exception {
+        String dataStoreTypeKey = group + "." + Definitions.DATASTORETYPE;
+        String dataStoreType = ServletProperties.getProperties().getProperty(dataStoreTypeKey, "");
+        if (dataStoreType.equals("")) {
+            dataStoreType = Definitions.JSON_EXTENDED;
+        }
+
         if (log.isTraceEnabled()) {
-            log.trace("getJsonFromContact group:" + group + " icalvcal:" + icalVcal + " since:" + since + " contact:" + contact);
+            log.trace("getJsonFromContact group:" + group + " datastoreType:" + dataStoreType + " since:" + since + " contact:" + contact);
         }
         //getJsonFromContact group:contact type:application/json-card since:0
         Converter converter = ConverterManager.getConverter(group);
         String content = null;
-        if (icalVcal) {
+        
+//        if (icalVcal) {
+        if (!dataStoreType.equals(Definitions.JSON_EXTENDED)) {
             try {
                 JsonItem<String> jsonItem = new JsonItem<String>();
-                jsonItem.setContentType(Definitions.CONTACT_VCARD_TYPE);
+                //jsonItem.setContentType(Definitions.CONTACT_VCARD_TYPE);
+                jsonItem.setContentType(dataStoreType);
                 jsonItem.setKey(contact.getId());
                 jsonItem.setItem(UtilitySyncSource.contact2vcard(contact.getContact(), this.deviceTZ, this.deviceCharset));
                 content = converter.toRFC(jsonItem);
@@ -458,18 +463,28 @@ public class Repository {
     }
 
     private FakeJsonItem getJsonFromCalendar(CalendarWrapper calendar, String group, long since) throws Exception {
+        String dataStoreTypeKey = group + "." + Definitions.DATASTORETYPE;
+        String dataStoreType = ServletProperties.getProperties().getProperty(dataStoreTypeKey, "");
+        if (dataStoreType.equals("")) {
+            dataStoreType = Definitions.JSON_EXTENDED;
+        }
+
+
         if (log.isTraceEnabled()) {
-            log.trace("getJsonFromCalendar group:" + group + " icalvcal:" + icalVcal + " since:" + since);
+            log.trace("getJsonFromCalendar group:" + group + " datastoreType:" + dataStoreType + " since:" + since);
         }
 
         Converter converter = ConverterManager.getConverter(group);
         String content = null;
-        if (icalVcal) {
+        //if (icalVcal) {
+        if (!dataStoreType.equals(Definitions.JSON_EXTENDED)) {
             try {
                 JsonItem<String> jsonItem = new JsonItem<String>();
-                jsonItem.setContentType(Definitions.APPOINTMENT_VCAL_TYPE);
+                //jsonItem.setContentType(Definitions.APPOINTMENT_VCAL_TYPE);
+                jsonItem.setContentType(dataStoreType);
                 jsonItem.setKey(calendar.getId());
-                jsonItem.setItem(UtilitySyncSource.calendar2webCalendar(calendar.getCalendar(), Definitions.VCAL_FORMAT, this.deviceTZ, this.deviceCharset));
+                //jsonItem.setItem(UtilitySyncSource.calendar2webCalendar(calendar.getCalendar(), Definitions.VCAL_FORMAT, this.deviceTZ, this.deviceCharset));
+                jsonItem.setItem(UtilitySyncSource.calendar2webCalendar(calendar.getCalendar(), dataStoreType, this.deviceTZ, this.deviceCharset));
                 content = converter.toRFC(jsonItem);
             } catch (Exception ex) {
 
@@ -491,18 +506,26 @@ public class Repository {
     }
 
     private FakeJsonItem getJsonFromTask(CalendarWrapper calendar, String group, long since) throws Exception {
+        String dataStoreTypeKey = group + "." + Definitions.DATASTORETYPE;
+        String dataStoreType = ServletProperties.getProperties().getProperty(dataStoreTypeKey, "");
+        if (dataStoreType.equals("")) {
+            dataStoreType = Definitions.JSON_EXTENDED;
+        }
+
         if (log.isTraceEnabled()) {
-            log.trace("getJsonFromTask group:" + group + " icalvcal:" + icalVcal + " since:" + since);
+            log.trace("getJsonFromTask group:" + group + " dataStoreType:" + dataStoreType + " since:" + since);
         }
         //getJsonFromContact group:contact type:application/json-card since:0
         Converter converter = ConverterManager.getConverter(group);
         String content = null;
-        if (icalVcal) {
+
+        //if (icalVcal) {
+        if (!dataStoreType.equals(Definitions.JSON_EXTENDED)) {
             try {
                 JsonItem<String> jsonItem = new JsonItem<String>();
-                jsonItem.setContentType(Definitions.TASK_VCAL_TYPE);
+                jsonItem.setContentType(dataStoreType);
                 jsonItem.setKey(calendar.getId());
-                jsonItem.setItem(UtilitySyncSource.calendar2webCalendar(calendar.getCalendar(), Definitions.VCAL_FORMAT, this.deviceTZ, this.deviceCharset));
+                jsonItem.setItem(UtilitySyncSource.calendar2webCalendar(calendar.getCalendar(), dataStoreType, this.deviceTZ, this.deviceCharset));
                 content = converter.toRFC(jsonItem);
             } catch (Exception ex) {
 
@@ -525,7 +548,7 @@ public class Repository {
 
     private FakeJsonItem getJsonFromNote(NoteWrapper note, String group, long since) throws Exception {
         if (log.isTraceEnabled()) {
-            log.trace("getJsonFromNote group:" + group + " icalvcal:" + icalVcal + " since:" + since);
+            log.trace("getJsonFromNote group:" + group + " since:" + since);
         }
         //getJsonFromContact group:contact type:application/json-card since:0
         Converter converter = ConverterManager.getConverter(group);

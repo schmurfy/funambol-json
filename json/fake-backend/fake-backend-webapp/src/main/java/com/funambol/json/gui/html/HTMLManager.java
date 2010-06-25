@@ -36,10 +36,12 @@
 package com.funambol.json.gui.html;
 
 import com.funambol.json.gui.GuiServlet;
+import com.funambol.json.utility.Definitions;
 
 /**
  * This class is used to produce html tags and to buil html pages.
  */
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -239,6 +241,43 @@ public class HTMLManager {
         result+="<body>\n";
         result+=buildHtmlTag(Tag.H2,title);
         return result;
+    }
+
+    public static String getHtmlForDatastoreType(String group, String defaultOption) {
+        StringBuffer result = new StringBuffer();
+        List<String> options = new ArrayList<String>();
+
+        if (group.equals("appointment")) {
+            options.add(Definitions.JSON_EXTENDED);
+            options.add(Definitions.VCAL_FORMAT);
+            options.add(Definitions.ICAL_FORMAT);
+        } else if (group.equals("task")) {
+            options.add(Definitions.JSON_EXTENDED);
+            //options.add(Definitions.TASK_VCAL_TYPE);
+            options.add(Definitions.VCAL_FORMAT);
+            options.add(Definitions.ICAL_FORMAT);            
+        } else if (group.equals("contact")) {
+            options.add(Definitions.JSON_EXTENDED);
+            options.add(Definitions.CONTACT_VCARD_TYPE);
+        }
+
+        if (options.size() > 0) {
+            result.append("<hr/>" + "<form method=\"post\">\n");
+            result.append(HTMLManager.addFormField(GuiServlet.ACTION, GuiServlet.LIST));
+            result.append(HTMLManager.addFormField(GuiServlet.GROUP, group));
+            result.append("Datastore type:");
+            result.append(String.format("<select name=\"%s\">\n", Definitions.DATASTORETYPE));
+
+            for (String opt : options) {
+                String isSelected = opt.equals(defaultOption) ? "selected=\"selected\"" : "";
+                result.append(String.format("<option %s value=\"%s\">%s</option>\n", isSelected, opt, opt));
+            }
+
+            result.append("</select>\n");
+            result.append("<input type=\"submit\" value=\"Change\" />" + "</form>\n");
+            result.append("<hr/>");
+        }
+        return result.toString();
     }
 
     public static String addAction(String formName,String buttonName,String buttonAction, NameValuePair[] furterParameters,ParentTag mode) {

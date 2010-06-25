@@ -42,7 +42,8 @@ package com.funambol.json.utility;
 public interface Definitions {
 
     public final String LOG_NAME = "fake-json";
-
+    public static final String PROPERTIES_PATH = "WEB-INF/classes";
+    
     public final static String CONTACT = "contact";
     public final static String CONTACT_TYPE = "application/json-card";
     public final static String CONTACT_VCARD = "contactvcard";
@@ -68,5 +69,7 @@ public interface Definitions {
     public static final String VCAL_FORMAT = "text/x-vcalendar"; // To be used as index for VCal
     public static final String ICAL_FORMAT = "text/calendar"; // To be used as index for ICal
 
+    public static final String JSON_EXTENDED = "Json-Extended";
+    public final static String DATASTORETYPE = "DATASTORE_TYPE";
 
 }

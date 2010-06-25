@@ -38,6 +38,7 @@ import com.funambol.framework.server.Sync4jUser;
 import com.funambol.json.data.FakeJsonItem;
 import com.funambol.json.data.Repository;
 import com.funambol.json.utility.Definitions;
+import com.funambol.json.utility.ServletProperties;
 import com.funambol.json.utility.Util;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -95,6 +96,8 @@ public class JsonServlet extends HttpServlet implements javax.servlet.Servlet {
     public void init() {
         String temp = getInitParameter(ENABLE_CONFIGURATION);
         this.enableConfiguration = temp != null ? Boolean.parseBoolean(temp) : false;
+
+        ServletProperties.setPath(this.getServletContext().getRealPath(Definitions.PROPERTIES_PATH));
     }
 
     /**
