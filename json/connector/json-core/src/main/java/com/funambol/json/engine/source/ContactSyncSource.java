@@ -724,27 +724,23 @@ public class ContactSyncSource extends AbstractSyncSource
         guid = syncItemKey.getKeyAsString();
 
         try {
-
-            JsonItem<Contact> contactItem = manager.getExtendedItem(sessionID, guid);
              //retrieve backend type
             String backend = backendType.getPreferredType().getType();
 
             //if the backend requires items in vcard/ical formart
             if (vcardIcalBackend) {
-                //JsonItem<String> contactItem = manager.getRFCItem(sessionID, guid);
-                JsonItem<String> contact = new JsonItem<String>();
-                String objRFC = convert(contactItem.getItem(), backend);
-                contact.setItem(objRFC);
+                JsonItem<String> contactItem = manager.getRFCItem(sessionID, guid);
+                Contact contact = convert(contactItem.getItem(), backend);
 
                 if (contactItem != null) {
                     char status = ' ';
                     // @todo
                     //status = contactItem.getState().charAt(0);
-                    syncItem = createSyncItem(guid, contact.getItem(), status);
+                    syncItem = createSyncItem(guid, contact, status);
                 }
 
             } else {
-                //JsonItem<Contact> contactItem = manager.getExtendedItem(sessionID, guid);
+                JsonItem<Contact> contactItem = manager.getExtendedItem(sessionID, guid);
                 if (contactItem != null) {
                     char status = ' ';
                     // @todo
