@@ -37,15 +37,19 @@ package com.funambol.json.gui.html;
 
 import com.funambol.json.gui.GuiServlet;
 import com.funambol.json.utility.Definitions;
-
-/**
- * This class is used to produce html tags and to buil html pages.
- */
-
-
 import java.util.ArrayList;
 import java.util.List;
+
+
+/**
+ * This class is used to produce html tags and to build html pages.
+ */
 public class HTMLManager {
+
+    private static final String JSON_LABEL  = "Json-Extended" ;
+    private static final String VCARD_LABEL = "vCard" ;
+    private static final String VCAL_LABEL  = "vCalendar" ;
+    private static final String ICAL_LABEL  = "iCalendar" ;
 
     public static String addTextfield(String name, String value, int size, int maxlenght) {
         return openTag(Tag.INPUT, NameValuePair.parseFromStrings("name",name,"value",value==null?"":value,"maxlenght",""+maxlenght,"size",""+size));
@@ -53,10 +57,6 @@ public class HTMLManager {
 
     public static String addPassword(String name, String value, int size, int maxlenght) {
         return openTag(Tag.INPUT, NameValuePair.parseFromStrings("name",name,"value",value==null?"":value,"type","password","maxlenght",""+maxlenght,"size",""+size));
-    }
-
-    public static String closePage() {
-         return closePage(null);
     }
 
     public static String createOneRowTable(String...cellValues) {
@@ -84,6 +84,10 @@ public class HTMLManager {
        return result;
     }
 
+
+    public static String closePage() {
+         return closePage(null);
+    }
 
 
     public static String closePage(String footer) {
@@ -132,7 +136,12 @@ public class HTMLManager {
     }
 
 
-    public static String addAction(String formName,String buttonName,String buttonAction, NameValuePair[] furtherParameters,ParentTag mode, boolean createForm) {
+    public static String addAction(String formName, String buttonName, String buttonAction, NameValuePair[] furterParameters, ParentTag mode) {
+        return addAction(formName,buttonName, buttonAction, furterParameters,mode,true);
+
+    }
+
+    public static String addAction(String formName, String buttonName, String buttonAction, NameValuePair[] furtherParameters, ParentTag mode, boolean createForm) {
         String result = "";
         if(ParentTag.BOTH.equals(mode) || ParentTag.OPEN.equals(mode))
              result+=openTag(Tag.FORM,NameValuePair.parseFromStrings("name",formName,"method","get","action","./gui"));
@@ -189,7 +198,6 @@ public class HTMLManager {
     public static String openTag(Tag tag,NameValuePair...attributes) {
         String result = "<"+tag.tagValue;
 
-
         if(attributes!=null && attributes.length>0) {
             for(NameValuePair attrib:attributes)  {
                 if(attrib!=null) {
@@ -198,7 +206,6 @@ public class HTMLManager {
             }
 
         }
-
 
         result+=">\n";
         return result;
@@ -245,20 +252,19 @@ public class HTMLManager {
 
     public static String getHtmlForDatastoreType(String group, String defaultOption) {
         StringBuffer result = new StringBuffer();
-        List<String> options = new ArrayList<String>();
+        List<NameValuePair> options = new ArrayList<NameValuePair>();
 
         if (group.equals("appointment")) {
-            options.add(Definitions.JSON_EXTENDED);
-            options.add(Definitions.VCAL_FORMAT);
-            options.add(Definitions.ICAL_FORMAT);
+            options.add(new NameValuePair(JSON_LABEL, Definitions.JSON_EXTENDED));
+            options.add(new NameValuePair(VCAL_LABEL, Definitions.VCAL_FORMAT));
+            options.add(new NameValuePair(ICAL_LABEL, Definitions.ICAL_FORMAT));
         } else if (group.equals("task")) {
-            options.add(Definitions.JSON_EXTENDED);
-            //options.add(Definitions.TASK_VCAL_TYPE);
-            options.add(Definitions.VCAL_FORMAT);
-            options.add(Definitions.ICAL_FORMAT);            
+            options.add(new NameValuePair(JSON_LABEL, Definitions.JSON_EXTENDED));
+            options.add(new NameValuePair(VCAL_LABEL, Definitions.VCAL_FORMAT));
+            options.add(new NameValuePair(ICAL_LABEL, Definitions.ICAL_FORMAT));            
         } else if (group.equals("contact")) {
-            options.add(Definitions.JSON_EXTENDED);
-            options.add(Definitions.CONTACT_VCARD_TYPE);
+            options.add(new NameValuePair(JSON_LABEL, Definitions.JSON_EXTENDED));
+            options.add(new NameValuePair(VCARD_LABEL, Definitions.CONTACT_VCARD_TYPE));
         }
 
         if (options.size() > 0) {
@@ -268,9 +274,9 @@ public class HTMLManager {
             result.append("Datastore type:");
             result.append(String.format("<select name=\"%s\">\n", Definitions.DATASTORETYPE));
 
-            for (String opt : options) {
-                String isSelected = opt.equals(defaultOption) ? "selected=\"selected\"" : "";
-                result.append(String.format("<option %s value=\"%s\">%s</option>\n", isSelected, opt, opt));
+            for (NameValuePair opt : options) {
+                String isSelected = opt.getValue().equals(defaultOption) ? "selected=\"selected\"" : "";
+                result.append(String.format("<option %s value=\"%s\">%s</option>\n", isSelected, opt.getValue(), opt.getName()));
             }
 
             result.append("</select>\n");
@@ -280,10 +286,5 @@ public class HTMLManager {
         return result.toString();
     }
 
-    public static String addAction(String formName,String buttonName,String buttonAction, NameValuePair[] furterParameters,ParentTag mode) {
-        return addAction(formName,buttonName, buttonAction, furterParameters,mode,true);
-
-    }
-
-
 }
+
