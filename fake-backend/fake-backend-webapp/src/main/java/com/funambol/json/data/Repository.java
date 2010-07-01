@@ -66,7 +66,6 @@ import com.funambol.json.utility.Definitions;
 import com.funambol.json.utility.ServletProperties;
 import com.funambol.json.utility.Util;
 import com.funambol.server.admin.AdminException;
-import com.funambol.server.admin.DBUserManager;
 import com.funambol.server.admin.UserManager;
 import com.funambol.server.config.Configuration;
 import java.sql.Timestamp;
@@ -153,7 +152,6 @@ public class Repository {
 
             users = userManager.getUsers(wcFinal);
 
-
             if (users.length > 0) {
                 user = users[0];
             }
@@ -166,8 +164,6 @@ public class Repository {
         } catch (PersistentStoreException ex) {
             log.error(ex);
         }
-
-
 
         return null;
     }
@@ -438,7 +434,6 @@ public class Repository {
         if (!dataStoreType.equals(Definitions.JSON_EXTENDED)) {
             try {
                 JsonItem<String> jsonItem = new JsonItem<String>();
-                //jsonItem.setContentType(Definitions.CONTACT_VCARD_TYPE);
                 jsonItem.setContentType(dataStoreType);
                 jsonItem.setKey(contact.getId());
                 jsonItem.setItem(UtilitySyncSource.contact2vcard(contact.getContact(), this.deviceTZ, this.deviceCharset));
@@ -480,10 +475,8 @@ public class Repository {
         if (!dataStoreType.equals(Definitions.JSON_EXTENDED)) {
             try {
                 JsonItem<String> jsonItem = new JsonItem<String>();
-                //jsonItem.setContentType(Definitions.APPOINTMENT_VCAL_TYPE);
                 jsonItem.setContentType(dataStoreType);
                 jsonItem.setKey(calendar.getId());
-                //jsonItem.setItem(UtilitySyncSource.calendar2webCalendar(calendar.getCalendar(), Definitions.VCAL_FORMAT, this.deviceTZ, this.deviceCharset));
                 jsonItem.setItem(UtilitySyncSource.calendar2webCalendar(calendar.getCalendar(), dataStoreType, this.deviceTZ, this.deviceCharset));
                 content = converter.toRFC(jsonItem);
             } catch (Exception ex) {
