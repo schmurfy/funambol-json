@@ -35,16 +35,13 @@
 package com.funambol.json.engine.source;
 
 import java.sql.Timestamp;
+import java.util.TimeZone;
+
 import net.sf.json.JSONObject;
+
 import com.funambol.common.pim.calendar.Calendar;
 import com.funambol.common.pim.calendar.Event;
-import com.funambol.framework.core.CTInfo;
-import com.funambol.framework.core.DSMem;
-import com.funambol.framework.core.DataStore;
-import com.funambol.framework.core.DevInf;
-import com.funambol.framework.core.SourceRef;
-import com.funambol.framework.core.SyncCap;
-import com.funambol.framework.core.VerDTD;
+
 import com.funambol.framework.engine.SyncItem;
 import com.funambol.framework.engine.SyncItemImpl;
 import com.funambol.framework.engine.SyncItemKey;
@@ -55,28 +52,37 @@ import com.funambol.framework.engine.source.SyncSourceException;
 import com.funambol.framework.engine.source.SyncSourceInfo;
 import com.funambol.framework.security.Sync4jPrincipal;
 import com.funambol.framework.server.Sync4jDevice;
+
 import com.funambol.json.abstractServlet.AbstractHttpTransportTest;
 import com.funambol.json.abstractServlet.JsonServlet;
 import com.funambol.json.converter.AppointmentConverter;
 import com.funambol.json.domain.JsonItem;
 import com.funambol.json.security.JsonUser;
 import com.funambol.json.util.Utility;
-import java.util.TimeZone;
 
+/**
+ * Test cases for AppointmentSyncSource class.
+ *
+ * @version $Id$
+ */
 public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
 
+    // ------------------------------------------------------------ Private data
     private static JsonServlet jsonServlet = new JsonServlet();
 
+    // ------------------------------------------------------------ Constructors
     public AppointmentSyncSourceTest() {
         super(jsonServlet);
     }
 
+    // ------------------------------------------------------- Protected methods
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
     }
 
+    // -------------------------------------------------------------- Test cases
     /**
      * 
      * @throws Exception
@@ -476,11 +482,7 @@ public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
 
     }
 
-    //---------------------------------------------------------- Private Methods
-    /**
-     * 
-     * 
-     */
+    //---------------------------------------------------------- Private methods
     private CalendarSyncSource createAppointmentSyncSource() {
 
         CalendarSyncSource source = new CalendarSyncSource();
@@ -496,11 +498,7 @@ public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
         return source;
     }
 
-    /**
-     * 
-     */
     private SyncContext createContext() {
-        // Cred credentials = new Cred(authentication);
         JsonUser user = new JsonUser("pippo", "pippo");
         Sync4jDevice device = new Sync4jDevice("deviceID");
         Sync4jPrincipal principal = new Sync4jPrincipal(user, device);
@@ -514,58 +512,4 @@ public class AppointmentSyncSourceTest extends AbstractHttpTransportTest {
         return context;
     }
 
-    /**
-     * Create a fake device and a sync context, then tests the smart sync
-     * source by providing a preferred appointment format into the device
-     * capabilities.
-     *
-     * @throws net.sf.json.JSONException
-     */
-    public void test_findRXContentType() {
-
-        CalendarSyncSource source = new CalendarSyncSource();
-
-        DevInf deviceInfo = new DevInf(
-                new VerDTD("1.2"),
-                "Funambol", "Funambol Outlook Sync Client", "",
-                "", "", "",
-                "", "",
-                true, true, true);
-        Sync4jPrincipal principal = Sync4jPrincipal.createPrincipal(
-                "fakeuser", "fakeuser_fakedevice");
-        principal.getDevice().getCapabilities().setDevInf(deviceInfo);
-
-        SyncContext context = new SyncContext(
-                principal, 200, null, "localhost", 2);
-
-        CTInfo[] rxs = new CTInfo[]{
-            new CTInfo(CalendarSyncSource.TYPE[CalendarSyncSource.SIFE_FORMAT], "1.0"),
-            new CTInfo(CalendarSyncSource.TYPE[CalendarSyncSource.VCAL_FORMAT], "1.0")
-        };
-        CTInfo[] txs = rxs;
-
-        DataStore dataStorePreferSifContact = new DataStore(
-                new SourceRef("appointment"), "appointment", 0,
-                rxs[0], rxs, txs[0], txs,
-                new DSMem(false),
-                new SyncCap());
-
-        principal.getDevice().getCapabilities().getDevInf().setDataStores(
-                new DataStore[]{dataStorePreferSifContact});
-
-        String actual = source.findRXContentType(context);
-        assertEquals(CalendarSyncSource.TYPE_ANYSIF, actual);
-
-        DataStore dataStorePreferVCard = new DataStore(
-                new SourceRef("appointment"), "appointment", 0,
-                rxs[1], rxs, txs[1], txs,
-                new DSMem(false),
-                new SyncCap());
-
-        principal.getDevice().getCapabilities().getDevInf().setDataStores(
-                new DataStore[]{dataStorePreferVCard});
-
-        actual = source.findRXContentType(context);
-        assertEquals(CalendarSyncSource.TYPE[CalendarSyncSource.VCAL_FORMAT], actual);
-    }
 }

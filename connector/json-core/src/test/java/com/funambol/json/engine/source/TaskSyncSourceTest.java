@@ -41,13 +41,6 @@ import net.sf.json.JSONException;
 
 import com.funambol.common.pim.calendar.Calendar;
 import com.funambol.common.pim.calendar.Task;
-import com.funambol.framework.core.CTInfo;
-import com.funambol.framework.core.DSMem;
-import com.funambol.framework.core.DataStore;
-import com.funambol.framework.core.DevInf;
-import com.funambol.framework.core.SourceRef;
-import com.funambol.framework.core.SyncCap;
-import com.funambol.framework.core.VerDTD;
 
 import com.funambol.framework.engine.SyncItem;
 import com.funambol.framework.engine.SyncItemImpl;
@@ -267,8 +260,6 @@ public class TaskSyncSourceTest extends AbstractHttpTransportTest {
     public void test_setItem() throws JSONException {
 
         try {
-
-            CalendarSyncSource source = createTaskSyncSource();
             
             String sifT =
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?><task>" +
@@ -383,61 +374,6 @@ public class TaskSyncSourceTest extends AbstractHttpTransportTest {
                 new Timestamp(System.currentTimeMillis()));
 
         return context;
-    }
-
-    /**
-     * Create a fake device and a sync context, then tests the smart sync
-     * source by providing a preferred task format into the device
-     * capabilities.
-     *
-     * @throws net.sf.json.JSONException
-     */
-    public void test_findRXContentType() {
-
-        CalendarSyncSource source = new CalendarSyncSource();
-
-        DevInf deviceInfo = new DevInf(
-                new VerDTD("1.2"),
-                "Funambol", "Funambol Outlook Sync Client", "",
-                "", "", "",
-                "", "",
-                true, true, true);
-        Sync4jPrincipal principal = Sync4jPrincipal.createPrincipal(
-                "fakeuser", "fakeuser_fakedevice");
-        principal.getDevice().getCapabilities().setDevInf(deviceInfo);
-
-        SyncContext context = new SyncContext(
-                principal, 200, null, "localhost", 2);
-
-        CTInfo[] rxs = new CTInfo[] {
-            new CTInfo(CalendarSyncSource.TYPE[CalendarSyncSource.SIFT_FORMAT], "1.0"),
-            new CTInfo(CalendarSyncSource.TYPE[CalendarSyncSource.VCAL_FORMAT], "1.0")
-        };
-        CTInfo[] txs = rxs;
-
-        DataStore dataStorePreferSifContact = new DataStore(
-                new SourceRef("task"), "task", 0,
-                rxs[0], rxs, txs[0], txs,
-                new DSMem(false),
-                new SyncCap());
-
-        principal.getDevice().getCapabilities().getDevInf().setDataStores(
-                new DataStore[] { dataStorePreferSifContact });
-
-        String actual = source.findRXContentType(context);
-        assertEquals(CalendarSyncSource.TYPE_ANYSIF, actual);
-
-        DataStore dataStorePreferVCard = new DataStore(
-                new SourceRef("task"), "task", 0,
-                rxs[1], rxs, txs[1], txs,
-                new DSMem(false),
-                new SyncCap());
-
-        principal.getDevice().getCapabilities().getDevInf().setDataStores(
-                new DataStore[] { dataStorePreferVCard });
-
-        actual = source.findRXContentType(context);
-        assertEquals(CalendarSyncSource.TYPE[CalendarSyncSource.VCAL_FORMAT], actual);
     }
 
 }

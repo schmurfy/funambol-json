@@ -55,8 +55,6 @@ import com.funambol.common.pim.converter.TaskToSIFT;
 import com.funambol.common.pim.sif.SIFCalendarParser;
 
 import com.funambol.framework.core.AlertCode;
-import com.funambol.framework.core.CTInfo;
-import com.funambol.framework.core.DataStore;
 import com.funambol.framework.engine.SyncItem;
 import com.funambol.framework.engine.SyncItemImpl;
 import com.funambol.framework.engine.SyncItemKey;
@@ -83,6 +81,7 @@ import com.funambol.json.exception.InternalServerErrorException;
 import com.funambol.json.exception.JsonConfigException;
 import com.funambol.json.exception.MalformedJsonContentException;
 import com.funambol.json.security.JsonUser;
+import com.funambol.json.util.SyncSourceUtil;
 import com.funambol.json.util.Utility;
 
 /**
@@ -90,12 +89,11 @@ import com.funambol.json.util.Utility;
  * 
  * @version $Id: CalendarSyncSource.java 51920 2010-06-04 05:10:49Z gazzaniga $
  */
-public class CalendarSyncSource extends AbstractSyncSource
-        implements MergeableSyncSource, Serializable, LazyInitBean {
+public class CalendarSyncSource
+extends AbstractSyncSource
+implements MergeableSyncSource, Serializable, LazyInitBean {
 
-    private static final long serialVersionUID = 2454307189271131431L;
-    protected static final FunambolLogger log = FunambolLoggerFactory.getLogger(Utility.LOG_NAME);
-    private Map<String, CalendarSyncSourceStrategy> strategies = null;
+    //---------------------------------------------------------------- Constants
     public static final int SIFE_FORMAT = 0; // To be used as index for SIF-Event
     public static final int SIFT_FORMAT = 1; // To be used as index for SIF-Task
     public static final int VCAL_FORMAT = 2; // To be used as index for VCal
@@ -107,13 +105,21 @@ public class CalendarSyncSource extends AbstractSyncSource
         "text/calendar", // ICal
     };
     public static final String TYPE_ANYSIF = "text/x-s4j-sif?";
+
+    //------------------------------------------------------------- Private data
+    private static final long serialVersionUID = 2454307189271131431L;
+    protected static final FunambolLogger log =
+        FunambolLoggerFactory.getLogger(Utility.LOG_NAME);
+    private Map<String, CalendarSyncSourceStrategy> strategies = null;
+
     private String rxContentType; // preferred content type as derived from the
-    // analysis of the DevInf (RXPref)
+                                  // analysis of the DevInf (RXPref)
+
     //specifies if the sync source should catch a backend server internal error
     private boolean stopSyncOnFatalError = false;
     //specifies if the backend used webcalendar (ical/vcal) or json extended format
     private boolean vcalIcalBackend = false;
-    private SyncSourceInfo backendType;
+    
     // specifies if the backend requires to receive items in vcal format
     // (used only when vcardIcalBackend =true)
     private boolean vcalFormat = false;
@@ -122,8 +128,10 @@ public class CalendarSyncSource extends AbstractSyncSource
     private String sessionID;
     private long since = 0;
     protected String serverTimeZoneID = null;
-    private TimeZone deviceTimeZone = null;
+    private String deviceTimeZoneDescription = null;
 
+    //--------------------------------------------------------------- Properties
+    private SyncSourceInfo backendType;
     public SyncSourceInfo getBackendType() {
         return backendType;
     }
@@ -132,6 +140,7 @@ public class CalendarSyncSource extends AbstractSyncSource
         this.backendType = backendType;
     }
 
+    private TimeZone deviceTimeZone = null;
     public TimeZone getDeviceTimeZone() {
         return deviceTimeZone;
     }
@@ -139,9 +148,8 @@ public class CalendarSyncSource extends AbstractSyncSource
     public void setDeviceTimeZone(TimeZone deviceTimeZone) {
         this.deviceTimeZone = deviceTimeZone;
     }
-    private String deviceTimeZoneDescription = null;
-    private String deviceCharset = null;
 
+    private String deviceCharset = null;
     public String getDeviceCharset() {
         return deviceCharset;
     }
@@ -149,8 +157,8 @@ public class CalendarSyncSource extends AbstractSyncSource
     public void setDeviceCharset(String deviceCharset) {
         this.deviceCharset = deviceCharset;
     }
-    private Class entityType;
 
+    private Class entityType;
     public Class getEntityType() {
         return entityType;
     }
@@ -183,7 +191,8 @@ public class CalendarSyncSource extends AbstractSyncSource
             strategies.put(Event.class.getName(), new AppointmentSyncSourceStrategy());
             strategies.put(Task.class.getName(), new TaskSyncSourceStrategy());
 
-            rxContentType = findRXContentType(syncContext);
+            rxContentType =
+                SyncSourceUtil.getCalendarPreferredType(syncContext, entityType);
             String backendtype = backendType.getPreferredType().getType();
 
             //if (vcalIcalBackend) {
@@ -1314,63 +1323,6 @@ public class CalendarSyncSource extends AbstractSyncSource
             return convert(content, TYPE[ICAL_FORMAT], TYPE[SIFT_FORMAT]);
         }
 
-
-
         return content;
-
-    }
-
-    /**
-     * Finds the preferred RX content type, looking through all the datastores.
-     *
-     * @param context the SyncContext of the current synchronization session.
-     * @return a string containing the preferred MIME type ("text/x-s4j-sife",
-     *         "text/x-s4j-sift", "text/x-vcalendar", "text/calendar") or null
-     *         if no preferred MIME type could be found out.
-     */
-    protected String findRXContentType(SyncContext context) {
-        List<DataStore> dataStores;
-        try {
-            dataStores = context.getPrincipal().getDevice().getCapabilities().getDevInf().getDataStores();
-        } catch (NullPointerException e) { // something is missing
-            return null;
-        }
-        if (dataStores == null) {
-            return null;
-        }
-
-        boolean xvCalendar = false;
-        boolean iCalendar = false;
-        boolean sif = false;
-        for (DataStore dataStore : dataStores) {
-            CTInfo rxPref = dataStore.getRxPref();
-            if (rxPref != null) {
-                if (TYPE[VCAL_FORMAT].equals(rxPref.getCTType())) {
-                    xvCalendar = true;
-                } else if (TYPE[ICAL_FORMAT].equals(rxPref.getCTType())) {
-                    iCalendar = true;
-                } else if (TYPE[SIFE_FORMAT].equals(rxPref.getCTType())
-                        || TYPE[SIFT_FORMAT].equals(rxPref.getCTType())) {
-                    sif = true;
-                }
-            }
-            if (xvCalendar && iCalendar && sif) {
-                break; // It's useless to cycle again
-            }
-        }
-        if (xvCalendar && !iCalendar && !sif) {
-            return TYPE[VCAL_FORMAT]; // "text/x-vcalendar"
-        }
-        if (!xvCalendar && iCalendar && !sif) {
-            return TYPE[ICAL_FORMAT]; // "text/calendar"
-        }
-        if (!xvCalendar && !iCalendar && sif) {
-            return TYPE_ANYSIF; // "text/x-s4j-sif?"
-        }
-
-
-        // more than one type  -> ambiguous case
-        // no type             -> no information
-        return null;
     }
 }
