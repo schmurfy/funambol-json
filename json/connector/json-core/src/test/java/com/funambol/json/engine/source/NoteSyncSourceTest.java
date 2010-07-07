@@ -34,87 +34,58 @@
  */
 package com.funambol.json.engine.source;
 
-import com.funambol.framework.core.CTInfo;
-import com.funambol.framework.core.DSMem;
-import com.funambol.framework.core.DataStore;
-import com.funambol.framework.core.DevInf;
-import com.funambol.framework.core.SourceRef;
-import com.funambol.framework.core.SyncCap;
-import com.funambol.framework.core.VerDTD;
-import net.sf.json.JSONException;
+import junitx.util.PrivateAccessor;
 
-import com.funambol.framework.engine.source.SyncContext;
-import com.funambol.framework.security.Sync4jPrincipal;
+import com.funambol.common.pim.common.Property;
+import com.funambol.common.pim.note.Note;
+
 import com.funambol.json.abstractServlet.AbstractHttpTransportTest;
 import com.funambol.json.abstractServlet.JsonServlet;
 
-
+/**
+ * Test cases for noteSyncSource class.
+ * @version $Id$
+ */
 public class NoteSyncSourceTest extends AbstractHttpTransportTest {
 
+    // ------------------------------------------------------------ Private data
     private static JsonServlet jsonServlet = new JsonServlet();
+    private NoteSyncSource instance = null;
 
+    // ------------------------------------------------------------- Constructor
     public NoteSyncSourceTest() {
         super(jsonServlet);
+        instance = new NoteSyncSource();
     }
 
+    // ------------------------------------------------------- Protected methods
     @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
-    
-    /**
-     * Create a fake device and a sync context, then tests the smart sync
-     * source by providing a preferred note format into the device
-     * capabilities.
-     *
-     * @throws net.sf.json.JSONException
-     */
-    public void test_findRXContentType() {
 
-        NoteSyncSource source = new NoteSyncSource();
+    public void testNote2plaintext_Empty() throws Exception, Throwable {
+        Note note = new Note();
+        note.setTextDescription(null);
+        String result = (String)PrivateAccessor.invoke(
+            instance,
+            "note2plaintext",
+            new Class[] {Note.class},
+            new Object[] {note}
+        );
+        assertEquals("Wrong note description returned", "", result);
+    }
 
-        DevInf deviceInfo = new DevInf(
-                new VerDTD("1.2"),
-                "Funambol", "Funambol Outlook Sync Client", "",
-                "", "", "",
-                "", "",
-                true, true, true);
-        Sync4jPrincipal principal = Sync4jPrincipal.createPrincipal(
-                "fakeuser", "fakeuser_fakedevice");
-        principal.getDevice().getCapabilities().setDevInf(deviceInfo);
-
-        SyncContext context = new SyncContext(
-                principal, 200, null, "localhost", 2);
-
-        CTInfo[] rxs = new CTInfo[] {
-            new CTInfo(NoteSyncSource.TYPE[NoteSyncSource.SIFN_FORMAT], "1.0"),
-            new CTInfo(NoteSyncSource.TYPE[NoteSyncSource.PLAINTEXT_FORMAT], "1.0")
-        };
-        CTInfo[] txs = rxs;
-
-        DataStore dataStorePreferSifContact = new DataStore(
-                new SourceRef("contact"), "contact", 0,
-                rxs[0], rxs, txs[0], txs,
-                new DSMem(false),
-                new SyncCap());
-
-        principal.getDevice().getCapabilities().getDevInf().setDataStores(
-                new DataStore[] { dataStorePreferSifContact });
-
-        String actual = source.findRXContentType(context);
-        assertEquals(NoteSyncSource.TYPE[NoteSyncSource.SIFN_FORMAT], actual);
-
-        DataStore dataStorePreferVCard = new DataStore(
-                new SourceRef("contact"), "contact", 0,
-                rxs[1], rxs, txs[1], txs,
-                new DSMem(false),
-                new SyncCap());
-
-        principal.getDevice().getCapabilities().getDevInf().setDataStores(
-                new DataStore[] { dataStorePreferVCard });
-
-        actual = source.findRXContentType(context);
-        assertEquals(NoteSyncSource.TYPE[NoteSyncSource.PLAINTEXT_FORMAT], actual);
+    public void testNote2plaintext_String() throws Exception, Throwable {
+        Note note = new Note();
+        note.setTextDescription(new Property("note description"));
+        String result = (String)PrivateAccessor.invoke(
+            instance,
+            "note2plaintext",
+            new Class[] {Note.class},
+            new Object[] {note}
+        );
+        assertEquals("Wrong note description returned", "note description", result);
     }
 
 }

@@ -35,12 +35,15 @@
 package com.funambol.json.engine.source;
 
 import java.io.ByteArrayInputStream;
-import java.sql.Timestamp;
-import java.util.TimeZone;
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.TimeZone;
+
 import com.funambol.common.pim.note.Note;
 import com.funambol.common.pim.converter.NoteToSIFN;
 import com.funambol.common.pim.sif.SIFNParser;
+
 import com.funambol.framework.core.AlertCode;
 import com.funambol.framework.core.CTInfo;
 import com.funambol.framework.core.DataStore;
@@ -58,6 +61,9 @@ import com.funambol.framework.logging.FunambolLoggerFactory;
 import com.funambol.framework.security.Sync4jPrincipal;
 import com.funambol.framework.server.Sync4jDevice;
 import com.funambol.framework.tools.beans.LazyInitBean;
+
+import com.funambol.server.config.Configuration;
+
 import com.funambol.json.admin.JsonConnectorConfig;
 import com.funambol.json.converter.NoteConverter;
 import com.funambol.json.dao.JsonDAO;
@@ -71,37 +77,36 @@ import com.funambol.json.exception.MalformedJsonContentException;
 import com.funambol.json.manager.JsonManager;
 import com.funambol.json.manager.JsonNoteManager;
 import com.funambol.json.security.JsonUser;
+import com.funambol.json.util.SyncSourceUtil;
 import com.funambol.json.util.Utility;
-import com.funambol.server.config.Configuration;
-import java.util.List;
 
 /**
- * It implements the methods required by the SyncSource interface.
- * 
- * @version $Id:$
+ * SyncSource for note synchronization.
+ *
+ * @version $Id$
  */
-public class NoteSyncSource extends AbstractSyncSource         
-        implements MergeableSyncSource, Serializable, LazyInitBean {
+public class NoteSyncSource
+extends AbstractSyncSource         
+implements MergeableSyncSource, Serializable, LazyInitBean {
 
-
-    private static final long serialVersionUID = 2454307189271131431L;
-
-    protected static final FunambolLogger log = FunambolLoggerFactory.getLogger(Utility.LOG_NAME);
-
-    private NoteConverter converter;
-    private JsonManager<Note> manager;
-    private JsonDAO dao;
-    
-    public static final int SIFN_FORMAT = 0;      // To be used as index for SIF-Note
+    //---------------------------------------------------------------- Constants
+    public static final int SIFN_FORMAT      = 0; // To be used as index for SIF-Note
     public static final int PLAINTEXT_FORMAT = 1; // To be used as index for plain/text notes
-    
     public static final String[] TYPE = {
         "text/x-s4j-sifn", // SIF-Note
         "text/plain"       //plain text note
     };
 
     protected static final String VERSION_SIFN      = "1.0";
-    protected static final String VERSION_PLAINTEXT = "1.0";    
+    protected static final String VERSION_PLAINTEXT = "1.0";
+    
+    //------------------------------------------------------------- Private data
+    private static final long serialVersionUID = 2454307189271131431L;
+    protected static final FunambolLogger log =
+        FunambolLoggerFactory.getLogger(Utility.LOG_NAME);
+    private NoteConverter converter;
+    private JsonManager<Note> manager;
+    private JsonDAO dao;
     
     private String rxContentType; // preferred content type as derived from the
                                   // analysis of the DevInf (RXPref)
@@ -109,18 +114,17 @@ public class NoteSyncSource extends AbstractSyncSource
     //specifies if the sync source should catch a backend server internal error
     private boolean stopSyncOnFatalError = false;
 
-    private SyncSourceInfo backendType;
-
     private Sync4jPrincipal principal;    
     private String username;
     private String sessionID;
     
     private long since = 0;
     
-    protected String serverTimeZoneID = null;           
-    
-    private TimeZone deviceTimeZone = null;
+    protected String serverTimeZoneID = null;
+    private String deviceTimeZoneDescription = null;
 
+    //--------------------------------------------------------------- Properties
+    private SyncSourceInfo backendType;
     public SyncSourceInfo getBackendType() {
         return backendType;
     }
@@ -129,6 +133,7 @@ public class NoteSyncSource extends AbstractSyncSource
         this.backendType = backendType;
     }
 
+    private TimeZone deviceTimeZone = null;
     public TimeZone getDeviceTimeZone() {
         return deviceTimeZone;
     }
@@ -136,10 +141,8 @@ public class NoteSyncSource extends AbstractSyncSource
     public void setDeviceTimeZone(TimeZone deviceTimeZone) {
         this.deviceTimeZone = deviceTimeZone;
     }
-    private String deviceTimeZoneDescription = null;
     
     private String deviceCharset = null;
-
     public String getDeviceCharset() {
         return deviceCharset;
     }
@@ -148,7 +151,6 @@ public class NoteSyncSource extends AbstractSyncSource
         this.deviceCharset = deviceCharset;
     }
     
-
     //----------------------------------------------------------- Public Methods
     
     /**
@@ -175,7 +177,7 @@ public class NoteSyncSource extends AbstractSyncSource
             this.converter = new NoteConverter();
             this.manager = new JsonNoteManager(dao, converter);
 
-            rxContentType = findRXContentType(syncContext);
+            rxContentType = SyncSourceUtil.getNotePreferredType(syncContext);
 
             try {
                 stopSyncOnFatalError = JsonConnectorConfig.getConfigInstance().getStopSyncOnFatalError();
@@ -1077,53 +1079,4 @@ public class NoteSyncSource extends AbstractSyncSource
         return "";
     }
 
-   /**
-    * Finds the preferred RX content type, looking through all the datastores.
-    *
-    * @param context the SyncContext of the current synchronization session.
-    * @return a string containing the preferred MIME type ("text/x-s4j-sifn" or
-    *         "text/plain"), or null if no preferred MIME type could be found
-    *         out.
-    */
-   protected String findRXContentType(SyncContext context) {
-       List<DataStore> dataStores;
-       try {
-        dataStores = context.getPrincipal()
-                            .getDevice()
-                            .getCapabilities()
-                            .getDevInf()
-                            .getDataStores();
-       } catch (NullPointerException e) { // something is missing
-           return null;
-       }
-       if (dataStores == null) {
-           return null;
-       }
-
-       boolean sifN = false;
-       boolean textPlain = false;
-       for (DataStore dataStore : dataStores) {
-           CTInfo rxPref = dataStore.getRxPref();
-           if (rxPref != null) {
-               if (TYPE[SIFN_FORMAT].equals(rxPref.getCTType())) {
-                   sifN = true;
-               } else if (TYPE[PLAINTEXT_FORMAT].equals(rxPref.getCTType())) {
-                   textPlain = true;
-               }
-           }
-           if (sifN && textPlain) {
-               break; // It's useless to cycle again
-           }
-       }
-       if (sifN && !textPlain) {
-           return TYPE[SIFN_FORMAT]; // "text/x-s4j-sifn"
-       }
-       if (!sifN && textPlain) {
-           return TYPE[PLAINTEXT_FORMAT]; // "text/plain"
-       }
-
-       // sifN  && textPlain  -> ambiguous case
-       // !sifN && !textPlain -> no information
-       return null;
-   }
 }

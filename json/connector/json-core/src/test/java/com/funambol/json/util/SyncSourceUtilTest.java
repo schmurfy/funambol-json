@@ -81,7 +81,8 @@ public class SyncSourceUtilTest extends TestCase {
 
     // -------------------------------------------------------------- Test cases
 
-   public void testGetCalendarPreferredType_Null()
+    // ---------------------------------------------------------------- Calendar
+    public void testGetCalendarPreferredType_Null()
     throws Exception, Throwable {
 
         Set rxPrefs = null;
@@ -700,6 +701,364 @@ public class SyncSourceUtilTest extends TestCase {
         String expected = "text/x-vcalendar";
         String result =
             SyncSourceUtil.getCalendarPreferredType(syncContext, Event.class);
+        assertEquals("Wrong content type", expected, result);
+    }
+
+    // ----------------------------------------------------------------- Contact
+    public void testGetContactPreferredType_Null()
+    throws Exception, Throwable {
+
+        Set rxPrefs = null;
+
+        String result = (String)PrivateAccessor.invoke(
+            SyncSourceUtil.class,
+            "getContactPreferredType",
+            new Class[] {Set.class},
+            new Object[] {rxPrefs}
+        );
+        assertNull("Wrong content type", result);
+    }
+
+    public void testGetContactPreferredType_Empty()
+    throws Exception, Throwable {
+
+        Set rxPrefs = new HashSet();
+
+        String result = (String)PrivateAccessor.invoke(
+            SyncSourceUtil.class,
+            "getContactPreferredType",
+            new Class[] {Set.class},
+            new Object[] {rxPrefs}
+        );
+        assertNull("Wrong content type", result);
+    }
+
+    public void testGetContactPreferredType_Cal()
+    throws Exception, Throwable {
+
+        Set<String> rxPrefs = new HashSet<String>();
+        rxPrefs.add("text/x-vcalendar");
+
+        String result = (String)PrivateAccessor.invoke(
+            SyncSourceUtil.class,
+            "getContactPreferredType",
+            new Class[] {Set.class},
+            new Object[] {rxPrefs}
+        );
+        assertNull("Wrong content type", result);
+    }
+
+    public void testGetContactPreferredType_VCard_VCal()
+    throws Exception, Throwable {
+
+        Set<String> rxPrefs = new HashSet<String>();
+        rxPrefs.add("text/x-vcalendar");
+        rxPrefs.add("text/x-vcard");
+
+        String expected = "text/x-vcard";
+        String result = (String)PrivateAccessor.invoke(
+            SyncSourceUtil.class,
+            "getContactPreferredType",
+            new Class[] {Set.class},
+            new Object[] {rxPrefs}
+        );
+        assertEquals("Wrong content type", expected, result);
+    }
+
+    public void testGetContactPreferredType_SIFC_VCal()
+    throws Exception, Throwable {
+
+        Set<String> rxPrefs = new HashSet<String>();
+        rxPrefs.add("text/x-vcalendar");
+        rxPrefs.add("text/x-s4j-sifc");
+
+        String expected = "text/x-s4j-sifc";
+        String result = (String)PrivateAccessor.invoke(
+            SyncSourceUtil.class,
+            "getContactPreferredType",
+            new Class[] {Set.class},
+            new Object[] {rxPrefs}
+        );
+        assertEquals("Wrong content type", expected, result);
+    }
+
+    public void testGetContactPreferredType_VCard_SIFC_VCal()
+    throws Exception, Throwable {
+
+        Set<String> rxPrefs = new HashSet<String>();
+        rxPrefs.add("text/x-vcalendar");
+        rxPrefs.add("text/x-vcard");
+        rxPrefs.add("text/x-s4j-sifc");
+
+        String result = (String)PrivateAccessor.invoke(
+            SyncSourceUtil.class,
+            "getContactPreferredType",
+            new Class[] {Set.class},
+            new Object[] {rxPrefs}
+        );
+        assertNull("Wrong content type", result);
+    }
+
+    public void testGetContactPreferredType_SyncContext_VCard_VCal()
+    throws Exception, Throwable {
+
+        List<DataStore> dataStores = new ArrayList<DataStore>();
+
+        DataStore dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("card"));
+        dataStore.setDisplayName("card");
+        dataStore.setRxPref(new CTInfo("text/x-vcard", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/x-vcard", "1.0"));
+        dataStores.add(dataStore);
+
+        dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("cal"));
+        dataStore.setDisplayName("cal");
+        dataStore.setRxPref(new CTInfo("text/x-vcalendar", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/x-vcalendar", "1.0"));
+        dataStores.add(dataStore);
+
+        SyncContext syncContext = createSyncContext(dataStores);
+
+        String expected = "text/x-vcard";
+        String result = SyncSourceUtil.getContactPreferredType(syncContext);
+        assertEquals("Wrong content type", expected, result);
+    }
+
+    public void testGetContactPreferredType_SyncContext_VCard_SIFC_VCal()
+    throws Exception, Throwable {
+
+        List<DataStore> dataStores = new ArrayList<DataStore>();
+
+        DataStore dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("card"));
+        dataStore.setDisplayName("card");
+        dataStore.setRxPref(new CTInfo("text/x-vcard", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/x-vcard", "1.0"));
+        dataStores.add(dataStore);
+
+        dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("scard"));
+        dataStore.setDisplayName("scard");
+        dataStore.setRxPref(new CTInfo("text/x-s4j-sifc", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/x-s4j-sifc", "1.0"));
+        dataStores.add(dataStore);
+
+        dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("cal"));
+        dataStore.setDisplayName("cal");
+        dataStore.setRxPref(new CTInfo("text/x-vcalendar", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/x-vcalendar", "1.0"));
+        dataStores.add(dataStore);
+
+        SyncContext syncContext = createSyncContext(dataStores);
+
+        String result = SyncSourceUtil.getContactPreferredType(syncContext);
+        assertNull("Wrong content type", result);
+    }
+
+    public void testGetContactPreferredType_SyncContext_SIFC_VCal()
+    throws Exception, Throwable {
+
+        List<DataStore> dataStores = new ArrayList<DataStore>();
+
+        DataStore dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("scard"));
+        dataStore.setDisplayName("scard");
+        dataStore.setRxPref(new CTInfo("text/x-s4j-sifc", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/x-s4j-sifc", "1.0"));
+        dataStores.add(dataStore);
+
+        dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("cal"));
+        dataStore.setDisplayName("cal");
+        dataStore.setRxPref(new CTInfo("text/x-vcalendar", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/x-vcalendar", "1.0"));
+        dataStores.add(dataStore);
+
+        SyncContext syncContext = createSyncContext(dataStores);
+
+        String expected = "text/x-s4j-sifc";
+        String result = SyncSourceUtil.getContactPreferredType(syncContext);
+        assertEquals("Wrong content type", expected, result);
+    }
+
+    // -------------------------------------------------------------------- Note
+    public void testGetNotePreferredType_Null()
+    throws Exception, Throwable {
+
+        Set rxPrefs = null;
+
+        String result = (String)PrivateAccessor.invoke(
+            SyncSourceUtil.class,
+            "getNotePreferredType",
+            new Class[] {Set.class},
+            new Object[] {rxPrefs}
+        );
+        assertNull("Wrong content type", result);
+    }
+
+    public void testGetNotePreferredType_Empty()
+    throws Exception, Throwable {
+
+        Set rxPrefs = new HashSet();
+
+        String result = (String)PrivateAccessor.invoke(
+            SyncSourceUtil.class,
+            "getNotePreferredType",
+            new Class[] {Set.class},
+            new Object[] {rxPrefs}
+        );
+        assertNull("Wrong content type", result);
+    }
+
+    public void testGetNotePreferredType_Cal()
+    throws Exception, Throwable {
+
+        Set<String> rxPrefs = new HashSet<String>();
+        rxPrefs.add("text/x-vcalendar");
+
+        String result = (String)PrivateAccessor.invoke(
+            SyncSourceUtil.class,
+            "getNotePreferredType",
+            new Class[] {Set.class},
+            new Object[] {rxPrefs}
+        );
+        assertNull("Wrong content type", result);
+    }
+
+    public void testGetNotePreferredType_Plain_VCal()
+    throws Exception, Throwable {
+
+        Set<String> rxPrefs = new HashSet<String>();
+        rxPrefs.add("text/x-vcalendar");
+        rxPrefs.add("text/plain");
+
+        String expected = "text/plain";
+        String result = (String)PrivateAccessor.invoke(
+            SyncSourceUtil.class,
+            "getNotePreferredType",
+            new Class[] {Set.class},
+            new Object[] {rxPrefs}
+        );
+        assertEquals("Wrong content type", expected, result);
+    }
+
+    public void testGetNotePreferredType_SIFN_VCal()
+    throws Exception, Throwable {
+
+        Set<String> rxPrefs = new HashSet<String>();
+        rxPrefs.add("text/x-vcalendar");
+        rxPrefs.add("text/x-s4j-sifn");
+
+        String expected = "text/x-s4j-sifn";
+        String result = (String)PrivateAccessor.invoke(
+            SyncSourceUtil.class,
+            "getNotePreferredType",
+            new Class[] {Set.class},
+            new Object[] {rxPrefs}
+        );
+        assertEquals("Wrong content type", expected, result);
+    }
+
+    public void testGetNotePreferredType_Plain_SIFN_VCal()
+    throws Exception, Throwable {
+
+        Set<String> rxPrefs = new HashSet<String>();
+        rxPrefs.add("text/x-vcalendar");
+        rxPrefs.add("text/plain");
+        rxPrefs.add("text/x-s4j-sifn");
+
+        String result = (String)PrivateAccessor.invoke(
+            SyncSourceUtil.class,
+            "getNotePreferredType",
+            new Class[] {Set.class},
+            new Object[] {rxPrefs}
+        );
+        assertNull("Wrong content type", result);
+    }
+
+    public void testGetNotePreferredType_SyncContext_Plain_VCal()
+    throws Exception, Throwable {
+
+        List<DataStore> dataStores = new ArrayList<DataStore>();
+
+        DataStore dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("note"));
+        dataStore.setDisplayName("note");
+        dataStore.setRxPref(new CTInfo("text/plain", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/plain", "1.0"));
+        dataStores.add(dataStore);
+
+        dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("cal"));
+        dataStore.setDisplayName("cal");
+        dataStore.setRxPref(new CTInfo("text/x-vcalendar", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/x-vcalendar", "1.0"));
+        dataStores.add(dataStore);
+
+        SyncContext syncContext = createSyncContext(dataStores);
+
+        String expected = "text/plain";
+        String result = SyncSourceUtil.getNotePreferredType(syncContext);
+        assertEquals("Wrong content type", expected, result);
+    }
+
+    public void testGetNotePreferredType_SyncContext_Plain_SIFN_VCal()
+    throws Exception, Throwable {
+
+        List<DataStore> dataStores = new ArrayList<DataStore>();
+
+        DataStore dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("note"));
+        dataStore.setDisplayName("note");
+        dataStore.setRxPref(new CTInfo("text/plain", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/plain", "1.0"));
+        dataStores.add(dataStore);
+
+        dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("snote"));
+        dataStore.setDisplayName("snote");
+        dataStore.setRxPref(new CTInfo("text/x-s4j-sifn", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/x-s4j-sifn", "1.0"));
+        dataStores.add(dataStore);
+
+        dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("cal"));
+        dataStore.setDisplayName("cal");
+        dataStore.setRxPref(new CTInfo("text/x-vcalendar", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/x-vcalendar", "1.0"));
+        dataStores.add(dataStore);
+
+        SyncContext syncContext = createSyncContext(dataStores);
+
+        String result = SyncSourceUtil.getNotePreferredType(syncContext);
+        assertNull("Wrong content type", result);
+    }
+
+    public void testGetNotePreferredType_SyncContext_SIFN_VCal()
+    throws Exception, Throwable {
+
+        List<DataStore> dataStores = new ArrayList<DataStore>();
+
+        DataStore dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("snote"));
+        dataStore.setDisplayName("snote");
+        dataStore.setRxPref(new CTInfo("text/x-s4j-sifn", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/x-s4j-sifn", "1.0"));
+        dataStores.add(dataStore);
+
+        dataStore = new DataStore();
+        dataStore.setSourceRef(new SourceRef("cal"));
+        dataStore.setDisplayName("cal");
+        dataStore.setRxPref(new CTInfo("text/x-vcalendar", "1.0"));
+        dataStore.setTxPref(new CTInfo("text/x-vcalendar", "1.0"));
+        dataStores.add(dataStore);
+
+        SyncContext syncContext = createSyncContext(dataStores);
+
+        String expected = "text/x-s4j-sifn";
+        String result = SyncSourceUtil.getNotePreferredType(syncContext);
         assertEquals("Wrong content type", expected, result);
     }
 

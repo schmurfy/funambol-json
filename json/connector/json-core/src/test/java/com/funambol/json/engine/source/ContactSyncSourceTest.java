@@ -34,16 +34,11 @@
  */
 package com.funambol.json.engine.source;
 
-import com.funambol.framework.core.AlertCode;
-import com.funambol.framework.core.CTInfo;
-import com.funambol.framework.core.DSMem;
-import com.funambol.framework.core.DataStore;
-import com.funambol.framework.core.DevInf;
-import com.funambol.framework.core.SourceRef;
-import com.funambol.framework.core.SyncCap;
-import com.funambol.framework.core.VerDTD;
+import java.sql.Timestamp;
+
 import net.sf.json.JSONException;
 
+import com.funambol.framework.core.AlertCode;
 import com.funambol.framework.engine.SyncItem;
 import com.funambol.framework.engine.SyncItemImpl;
 import com.funambol.framework.engine.SyncItemKey;
@@ -54,25 +49,32 @@ import com.funambol.framework.engine.source.SyncSourceException;
 import com.funambol.framework.engine.source.SyncSourceInfo;
 import com.funambol.framework.security.Sync4jPrincipal;
 import com.funambol.framework.server.Sync4jDevice;
+
 import com.funambol.json.abstractServlet.AbstractHttpTransportTest;
 import com.funambol.json.abstractServlet.JsonServlet;
 import com.funambol.json.security.JsonUser;
-import java.sql.Timestamp;
 
-
+/**
+ * Test cases for ContactSyncSource class.
+ * @version $Id$
+ */
 public class ContactSyncSourceTest extends AbstractHttpTransportTest {
 
+    // ------------------------------------------------------------ Private data
     private static JsonServlet jsonServlet = new JsonServlet();
 
+    // ------------------------------------------------------------- Constructor
     public ContactSyncSourceTest() {
         super(jsonServlet);
     }
 
+    // ------------------------------------------------------- Protected methods
     @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
-    
+
+    // -------------------------------------------------------------- Test cases
     /**
      * 
      * @throws net.sf.json.JSONException
@@ -418,60 +420,4 @@ public class ContactSyncSourceTest extends AbstractHttpTransportTest {
             fail();
         }
     }
-
-    /**
-     * Create a fake device and a sync context, then tests the smart sync
-     * source by providing a preferred contact format into the device
-     * capabilities.
-     *
-     * @throws net.sf.json.JSONException
-     */
-    public void test_findRXContentType() {
-
-        ContactSyncSource source = new ContactSyncSource();
-
-        DevInf deviceInfo = new DevInf(
-                new VerDTD("1.2"),
-                "Funambol", "Funambol Outlook Sync Client", "",
-                "", "", "",
-                "", "",
-                true, true, true);
-        Sync4jPrincipal principal = Sync4jPrincipal.createPrincipal(
-                "fakeuser", "fakeuser_fakedevice");
-        principal.getDevice().getCapabilities().setDevInf(deviceInfo);
-
-        SyncContext context = new SyncContext(
-                principal, 200, null, "localhost", 2);
-
-        CTInfo[] rxs = new CTInfo[] {
-            new CTInfo(ContactSyncSource.TYPE[ContactSyncSource.SIFC_FORMAT], "1.0"),
-            new CTInfo(ContactSyncSource.TYPE[ContactSyncSource.VCARD_FORMAT], "2.1")
-        };
-        CTInfo[] txs = rxs;
-
-        DataStore dataStorePreferSifContact = new DataStore(
-                new SourceRef("contact"), "contact", 0,
-                rxs[0], rxs, txs[0], txs,
-                new DSMem(false),
-                new SyncCap());
-
-        principal.getDevice().getCapabilities().getDevInf().setDataStores(
-                new DataStore[] { dataStorePreferSifContact });
-
-        String actual = source.findRXContentType(context);
-        assertEquals(ContactSyncSource.TYPE[ContactSyncSource.SIFC_FORMAT], actual);
-
-        DataStore dataStorePreferVCard = new DataStore(
-                new SourceRef("contact"), "contact", 0,
-                rxs[1], rxs, txs[1], txs,
-                new DSMem(false),
-                new SyncCap());
-
-        principal.getDevice().getCapabilities().getDevInf().setDataStores(
-                new DataStore[] { dataStorePreferVCard });
-
-        actual = source.findRXContentType(context);
-        assertEquals(ContactSyncSource.TYPE[ContactSyncSource.VCARD_FORMAT], actual);
-    }
-
 }

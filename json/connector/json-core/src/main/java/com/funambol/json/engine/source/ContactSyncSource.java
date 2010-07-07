@@ -34,19 +34,17 @@
  */
 package com.funambol.json.engine.source;
 
-import com.funambol.json.exception.JsonConfigException;
 import java.io.ByteArrayInputStream;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.TimeZone;
 
 import com.funambol.common.pim.contact.Contact;
 import com.funambol.common.pim.converter.ContactToSIFC;
-import com.funambol.common.pim.converter.ContactToVcard;
 import com.funambol.common.pim.sif.SIFCParser;
 import com.funambol.common.pim.vcard.VcardParser;
+
 import com.funambol.framework.core.AlertCode;
-import com.funambol.framework.core.CTInfo;
-import com.funambol.framework.core.DataStore;
 import com.funambol.framework.engine.SyncItem;
 import com.funambol.framework.engine.SyncItemImpl;
 import com.funambol.framework.engine.SyncItemKey;
@@ -61,6 +59,9 @@ import com.funambol.framework.logging.FunambolLoggerFactory;
 import com.funambol.framework.security.Sync4jPrincipal;
 import com.funambol.framework.server.Sync4jDevice;
 import com.funambol.framework.tools.beans.LazyInitBean;
+
+import com.funambol.server.config.Configuration;
+
 import com.funambol.json.admin.JsonConnectorConfig;
 import com.funambol.json.converter.ContactConverter;
 import com.funambol.json.dao.JsonDAO;
@@ -69,28 +70,25 @@ import com.funambol.json.domain.JsonItem;
 import com.funambol.json.domain.JsonKeys;
 import com.funambol.json.exception.DaoException;
 import com.funambol.json.exception.InternalServerErrorException;
+import com.funambol.json.exception.JsonConfigException;
 import com.funambol.json.exception.MalformedJsonContentException;
 import com.funambol.json.manager.JsonContactManager;
 import com.funambol.json.manager.JsonManager;
 import com.funambol.json.security.JsonUser;
+import com.funambol.json.util.SyncSourceUtil;
 import com.funambol.json.util.Utility;
-import com.funambol.server.config.Configuration;
-import java.io.Serializable;
-import java.util.List;
 
 /**
- * This is a simple SyncSource prototype. It implements the methods required by
- * the SyncSource interface.
+ * SyncSource for contact synchronization.
+ *
+ * @version $Id$
  */
-public class ContactSyncSource extends AbstractSyncSource
-        implements MergeableSyncSource, Serializable, LazyInitBean {
+public class ContactSyncSource
+extends AbstractSyncSource
+implements MergeableSyncSource, Serializable, LazyInitBean {
 
-    private static final long serialVersionUID = 2454307189271131431L;
-    private static final FunambolLogger log = FunambolLoggerFactory.getLogger(Utility.LOG_NAME);
-    private JsonManager<Contact> manager;
-    private ContactConverter converter;
-    private JsonDAO dao;
-    public static final int SIFC_FORMAT = 0; // To be used as index for
+    //---------------------------------------------------------------- Constants
+    public static final int SIFC_FORMAT  = 0; // To be used as index for SIF-Contact
     public static final int VCARD_FORMAT = 1; // To be used as index for VCard
     public static final String[] TYPE = {
         "text/x-s4j-sifc", // SIF-Contact
@@ -98,19 +96,30 @@ public class ContactSyncSource extends AbstractSyncSource
     };
     protected static final String VERSION_SIFC = "1.0";
     protected static final String VERSION_VCARD = "2.1";
+    
+    //------------------------------------------------------------- Private data
+    private static final long serialVersionUID = 2454307189271131431L;
+    private static final FunambolLogger log =
+        FunambolLoggerFactory.getLogger(Utility.LOG_NAME);
+    private JsonManager<Contact> manager;
+    private ContactConverter converter;
+    private JsonDAO dao;
+
     private String rxContentType; // preferred content type as derived from the
-    // analysis of the DevInf (RXPref)
+                                  // analysis of the DevInf (RXPref)
+
     //specifies if the sync source should catch a backend server internal error
     private boolean stopSyncOnFatalError = false;
     private boolean vcardIcalBackend;
-    private SyncSourceInfo backendType;
     private Sync4jPrincipal principal;
     private String username;
     private String sessionID;
     private long since = 0;
     protected String serverTimeZoneID = null;
-    private TimeZone deviceTimeZone = null;
+    private String deviceTimeZoneDescription = null;
 
+    //--------------------------------------------------------------- Properties
+    private SyncSourceInfo backendType;
     public SyncSourceInfo getBackendType() {
         return backendType;
     }
@@ -119,6 +128,7 @@ public class ContactSyncSource extends AbstractSyncSource
         this.backendType = backendType;
     }
 
+    private TimeZone deviceTimeZone = null;
     public TimeZone getDeviceTimeZone() {
         return deviceTimeZone;
     }
@@ -126,9 +136,8 @@ public class ContactSyncSource extends AbstractSyncSource
     public void setDeviceTimeZone(TimeZone deviceTimeZone) {
         this.deviceTimeZone = deviceTimeZone;
     }
-    private String deviceTimeZoneDescription = null;
+    
     private String deviceCharset = null;
-
     public String getDeviceCharset() {
         return deviceCharset;
     }
@@ -163,7 +172,7 @@ public class ContactSyncSource extends AbstractSyncSource
             this.converter = new ContactConverter();
             this.manager = new JsonContactManager(dao, converter);
 
-            rxContentType = findRXContentType(syncContext);
+            rxContentType = SyncSourceUtil.getContactPreferredType(syncContext);
 
             //retrieve backend type
             String backend = backendType.getPreferredType().getType();
@@ -222,9 +231,6 @@ public class ContactSyncSource extends AbstractSyncSource
         } catch (JsonConfigException e) {
             throw new SyncSourceException("Configuration of the SyncSource failed.", e);
         }
-
-
-
     }
 
     /**
@@ -1176,51 +1182,5 @@ public class ContactSyncSource extends AbstractSyncSource
             throw new Exception("Error converting Contact to SIF-C. ", e);
         }
         return xml;
-    }
-
-    /**
-     * Finds the preferred RX content type, looking through all the datastores.
-     *
-     * @param context the SyncContext of the current synchronization session.
-     * @return a string containing the preferred MIME type ("text/x-vcard" or
-     *         "text/x-s4j-sifc"), or null if no preferred MIME type could be
-     *         found out.
-     */
-    protected String findRXContentType(SyncContext context) {
-        List<DataStore> dataStores;
-        try {
-            dataStores = context.getPrincipal().getDevice().getCapabilities().getDevInf().getDataStores();
-        } catch (NullPointerException e) { // something is missing
-            return null;
-        }
-        if (dataStores == null) {
-            return null;
-        }
-
-        boolean sifC = false;
-        boolean vCard = false;
-        for (DataStore dataStore : dataStores) {
-            CTInfo rxPref = dataStore.getRxPref();
-            if (rxPref != null) {
-                if (TYPE[SIFC_FORMAT].equals(rxPref.getCTType())) {
-                    sifC = true;
-                } else if (TYPE[VCARD_FORMAT].equals(rxPref.getCTType())) {
-                    vCard = true;
-                }
-            }
-            if (sifC && vCard) {
-                break; // It's useless to cycle again
-            }
-        }
-        if (sifC && !vCard) {
-            return TYPE[SIFC_FORMAT]; // "text/x-s4j-sifc"
-        }
-        if (!sifC && vCard) {
-            return TYPE[VCARD_FORMAT]; // "text/x-vcard"
-        }
-
-        // sifC  && vCard  -> ambiguous case
-        // !sifC && !vCard -> no information
-        return null;
     }
 }

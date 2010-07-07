@@ -58,7 +58,13 @@ public class SyncSourceUtil {
     public static final String SIFT_FORMAT   = "text/x-s4j-sift" ; // SIF-Task
     public static final String VCAL_FORMAT   = "text/x-vcalendar"; // vCal (1.0)
     public static final String ICAL_FORMAT   = "text/calendar"   ; // iCal (2.0)
-    public static final String ANYSIF_FORMAT = "text/x-s4j-sif?";
+    public static final String ANYSIF_FORMAT = "text/x-s4j-sif?" ;
+
+    public static final String SIFC_FORMAT  = "text/x-s4j-sifc"; // SIF-Contact
+    public static final String VCARD_FORMAT = "text/x-vcard"   ; // vCard
+
+    public static final String SIFN_FORMAT      = "text/x-s4j-sifn"; // SIF-Note
+    public static final String TEXTPLAIN_FORMAT = "text/plain"     ; // plain
 
     // ---------------------------------------------------------- Public methods
 
@@ -173,6 +179,159 @@ public class SyncSourceUtil {
 
         // more than one type  -> ambiguous case
         // no type             -> no information
+        return null;
+    }
+
+   /**
+    * Finds the preferred RX content type, looking through all the datastores
+    * retrieved by context for Contact SyncSources.
+    *
+    * @param context the SyncContext of the current synchronization session.
+    * @return a string containing the preferred MIME type ("text/x-vcard" or
+    *         "text/x-s4j-sifc"), or null if no preferred MIME type could be
+    *         found out.
+    */
+    public static String getContactPreferredType(SyncContext context) {
+
+        List<DataStore> dataStores;
+        try {
+            dataStores = context.getPrincipal()
+                                .getDevice()
+                                .getCapabilities()
+                                .getDevInf()
+                                .getDataStores();
+
+            if (dataStores == null) {
+                return null;
+            }
+
+            Set<String> rxPrefs = new HashSet<String>();
+            for (DataStore dataStore : dataStores) {
+                CTInfo rxPref = dataStore.getRxPref();
+                if (rxPref != null) {
+                    rxPrefs.add(rxPref.getCTType());
+                }
+            }
+
+            return getContactPreferredType(rxPrefs);
+
+        } catch (NullPointerException e) { // something is missing
+            return null;
+        }
+
+    }
+
+   /**
+    * Finds the preferred RX content type, looking through all the given contact
+    * preferred RX.
+    *
+    * @param rxPrefs the set of preferred RX to analyse.
+    * @return a string containing the preferred MIME type ("text/x-vcard" or
+    *         "text/x-s4j-sifc"), or null if no preferred MIME type could be
+    *         found out.
+    */
+    private static String getContactPreferredType(Set<String> rxPrefs) {
+
+        if (rxPrefs == null || rxPrefs.isEmpty()) {
+            return null;
+        }
+
+        boolean sifC = false;
+        boolean vCard = false;
+
+        if (rxPrefs.contains(VCARD_FORMAT)) {
+            vCard = true;
+        }
+        if (rxPrefs.contains(SIFC_FORMAT)) {
+            sifC = true;
+        }
+
+        if (sifC && !vCard) {
+            return SIFC_FORMAT; // "text/x-s4j-sifc"
+        }
+        if (!sifC && vCard) {
+            return VCARD_FORMAT; // "text/x-vcard"
+        }
+
+        // sifC  && vCard  -> ambiguous case
+        // !sifC && !vCard -> no information
+        return null;
+
+    }
+
+   /**
+    * Finds the preferred RX content type, looking through all the datastores
+    * retrieved by context for Note SyncSources.
+    *
+    * @param context the SyncContext of the current synchronization session.
+    * @return a string containing the preferred MIME type ("text/plain" or
+    *         ("text/x-s4j-sifn"), or null if no preferred MIME type could be
+    *         found out.
+    */
+    public static String getNotePreferredType(SyncContext context) {
+
+        List<DataStore> dataStores;
+        try {
+            dataStores = context.getPrincipal()
+                                .getDevice()
+                                .getCapabilities()
+                                .getDevInf()
+                                .getDataStores();
+
+            if (dataStores == null) {
+                return null;
+            }
+
+            Set<String> rxPrefs = new HashSet<String>();
+            for (DataStore dataStore : dataStores) {
+                CTInfo rxPref = dataStore.getRxPref();
+                if (rxPref != null) {
+                    rxPrefs.add(rxPref.getCTType());
+                }
+            }
+
+            return getNotePreferredType(rxPrefs);
+
+        } catch (NullPointerException e) { // something is missing
+            return null;
+        }
+
+    }
+
+   /**
+    * Finds the preferred RX content type, looking through all the given note
+    * preferred RX.
+    *
+    * @param rxPrefs the set of preferred RX to analyse.
+    * @return a string containing the preferred MIME type ("text/plain" or
+    *         ("text/x-s4j-sifn"), or null if no preferred MIME type could be
+    *         found out.
+    */
+    private static String getNotePreferredType(Set<String> rxPrefs) {
+
+        if (rxPrefs == null || rxPrefs.isEmpty()) {
+            return null;
+        }
+
+        boolean sifN      = false;
+        boolean textPlain = false;
+
+        if (rxPrefs.contains(TEXTPLAIN_FORMAT)) {
+            textPlain = true;
+        }
+        if (rxPrefs.contains(SIFN_FORMAT)) {
+            sifN = true;
+        }
+
+        if (sifN && !textPlain) {
+            return SIFN_FORMAT; // "text/x-s4j-sifn"
+        }
+        if (!sifN && textPlain) {
+            return TEXTPLAIN_FORMAT; // "text/plain"
+        }
+
+        // sifN  && textPlain  -> ambiguous case
+        // !sifN && !textPlain -> no information
         return null;
     }
 
