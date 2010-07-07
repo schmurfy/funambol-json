@@ -4,14 +4,14 @@
     <groupId>funambol</groupId>
     <artifactId>json-module</artifactId>
     <name>Funambol JSON Module</name>
-    <version>8.7.0-SNAPSHOT</version>
+    <version>9.0.0-SNAPSHOT</version>
     <description>Funambol JSON Module</description>
     <packaging>pom</packaging>
     
   <parent>
         <groupId>funambol</groupId>
         <artifactId>funambol</artifactId>
-        <version>8.7.0</version>
+        <version>9.0.0</version>
     </parent>
     
     <dependencies>
@@ -19,7 +19,7 @@
         <dependency>
             <groupId>funambol</groupId>
             <artifactId>json-connector</artifactId>
-            <version>8.7.0-SNAPSHOT</version>
+            <version>9.0.0-SNAPSHOT</version>
             <type>s4j</type>
         </dependency>     
                      
@@ -28,7 +28,20 @@
     <build>   
          
         <plugins>            
-    
+          <plugin>
+            <inherited>true</inherited>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <groupId>org.apache.maven.plugins</groupId>
