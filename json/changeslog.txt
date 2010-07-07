@@ -1,3 +1,9 @@
+2010-07-07
+- lulu: Added SyncSourceUtil.class that contains usefull methods to call in the
+        SyncSources.
+        Fixed bug #9666 - Calendars and Tasks first sync, after upgrade of BB
+        client from v8.5, fails if items are received from server.
+
 2010-06-25
 - derose: bug #7867
           Completed the fix with the addition of configuration UI for the 
