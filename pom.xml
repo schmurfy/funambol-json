@@ -23,9 +23,9 @@
     </modules>
 
     <scm>
-       <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/trunk/json</connection>
-       <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/trunk/json</developerConnection>
-       <url>https://json-connector.forge.funambol.org/svn/json-connector/trunk/json</url>
+       <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/branches/v87/json</connection>
+       <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/branches/v87/json</developerConnection>
+       <url>https://json-connector.forge.funambol.org/svn/json-connector/branches/v87/json</url>
    </scm>
     
 </project>

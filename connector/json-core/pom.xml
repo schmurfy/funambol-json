@@ -184,9 +184,9 @@
     </dependencies>
 
     <scm>
-        <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/trunk/json/connector/json-core</connection>
-        <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/trunk/json/connector/json-core</developerConnection>
-        <url>https://json-connector.forge.funambol.org/svn/json-connector/trunk/json/connector/json-core</url>
+        <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/connector/json-core</connection>
+        <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/connector/json-core</developerConnection>
+        <url>https://json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/connector/json-core</url>
     </scm>
 
     <!--

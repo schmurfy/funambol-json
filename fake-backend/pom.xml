@@ -22,9 +22,9 @@
     </modules>
  
     <scm>
-       <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/trunk/json/fake-backend</connection>
-       <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/trunk/json/fake-backend</developerConnection>
-       <url>https://json-connector.forge.funambol.org/svn/json-connector/trunk/json/fake-backend</url>
+       <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/fake-backend</connection>
+       <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/fake-backend</developerConnection>
+       <url>https://json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/fake-backend</url>
    </scm>
 
 </project>

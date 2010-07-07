@@ -55,9 +55,9 @@
     </build>
 
     <scm>
-        <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/trunk/json/connector/json-module</connection>
-        <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/trunk/json/connector/json-module</developerConnection>
-        <url>https://json-connector.forge.funambol.org/svn/json-connector/trunk/json/connector/json-module</url>
+        <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/connector/json-module</connection>
+        <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/connector/json-module</developerConnection>
+        <url>https://json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/connector/json-module</url>
   </scm>
     
 
