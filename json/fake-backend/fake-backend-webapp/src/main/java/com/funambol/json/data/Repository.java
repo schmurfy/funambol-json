@@ -83,7 +83,7 @@ import org.apache.log4j.Logger;
  * This class allows to access the static repository where all json objects
  * are stored.
  *
- * @author Filippo
+ * @version $Id$
  */
 public class Repository {
 

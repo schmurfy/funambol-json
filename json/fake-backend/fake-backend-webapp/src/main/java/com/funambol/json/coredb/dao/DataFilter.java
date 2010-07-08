@@ -40,7 +40,7 @@ package com.funambol.json.coredb.dao;
  * A filter must be bound to one or more column names or to a column class type and it
  * will be applied on the column value.
  * 
- * @author Filippo
+ * @version $Id$
  */
 
 public abstract class DataFilter<T> {

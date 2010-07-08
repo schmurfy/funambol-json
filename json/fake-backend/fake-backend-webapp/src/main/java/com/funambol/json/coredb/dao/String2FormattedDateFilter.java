@@ -41,7 +41,7 @@ import java.util.Date;
 /**
  * Instances of this class can be used to perform conversion from string  to date.
  * 
- * @author Filippo
+ * @version $Id$
  */
 
 public class String2FormattedDateFilter extends DataFilter<String> {

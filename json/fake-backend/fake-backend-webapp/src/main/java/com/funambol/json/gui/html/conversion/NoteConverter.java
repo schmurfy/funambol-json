@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
 /**
  * Converter for note objects.
  * 
- * @author Filippo
+ * @version $Id$
  */
 
 public class NoteConverter implements Converter {

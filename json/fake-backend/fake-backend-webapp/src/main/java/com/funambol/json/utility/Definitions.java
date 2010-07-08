@@ -37,7 +37,7 @@ package com.funambol.json.utility;
 /**
  * Contains some constants used inside this project.
  *
- * @author Filippo
+ * @version $Id$
  */
 public interface Definitions {
 

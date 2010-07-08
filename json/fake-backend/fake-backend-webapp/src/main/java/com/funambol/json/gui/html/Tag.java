@@ -38,7 +38,7 @@ package com.funambol.json.gui.html;
 /**
  * The enumeration defines the list of html tags used by the HTMLManager class.
  * 
- * @author Filippo
+ * @version $Id$
  */
 public enum Tag {
     H1("h1"),

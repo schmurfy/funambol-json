@@ -55,7 +55,7 @@ import org.apache.log4j.Logger;
  * This class is used to perform query and update on a database, using
  * a connection pool.
  * 
- * @author Filippo
+ * @version $Id$
  */
 
 public class DBManager {

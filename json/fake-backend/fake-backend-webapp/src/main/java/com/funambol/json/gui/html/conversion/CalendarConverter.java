@@ -69,7 +69,7 @@ import org.apache.log4j.Logger;
 /**
  * Converter for Calendar objects
  * 
- * @author Filippo Machi
+ * @version $Id$
  */
 public class CalendarConverter implements Converter {
     public static final String JSON_EXTENDED = "application/json-appointment";

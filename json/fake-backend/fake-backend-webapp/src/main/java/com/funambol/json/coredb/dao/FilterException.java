@@ -38,7 +38,7 @@ package com.funambol.json.coredb.dao;
 /**
  * An exception thrown by filter objects.
  * 
- * @author Filippo Machi
+ * @version $Id$
  */
 public class FilterException extends Exception{
 

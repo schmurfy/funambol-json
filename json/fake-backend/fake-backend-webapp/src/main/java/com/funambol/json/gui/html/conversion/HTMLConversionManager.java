@@ -40,7 +40,7 @@ import java.util.Map;
 
 /**
  * A singleton manager class to access converter objects.
- * @author Filippo Machi
+ * @version $Id$
  */
 
 public class HTMLConversionManager {
