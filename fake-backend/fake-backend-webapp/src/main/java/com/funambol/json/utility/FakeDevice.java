@@ -42,7 +42,7 @@ import java.util.TimeZone;
 /**
  * This class provides fake info about the client device (used to perform tests)
  * 
- * @author Filippo
+ * @version $Id$
  */
 
 public class FakeDevice {

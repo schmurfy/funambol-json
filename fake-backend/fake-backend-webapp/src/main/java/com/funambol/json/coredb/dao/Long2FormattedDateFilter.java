@@ -41,7 +41,7 @@ import java.util.Date;
 /**
  * Instances of this class can be used to perform conversion from long to date.
  * 
- * @author Filippo
+ * @version $Id$
  */
 public class Long2FormattedDateFilter extends DataFilter<Long> {
 

@@ -38,7 +38,7 @@ package com.funambol.json.gui.html.conversion;
 /**
  * An exception thrown by converter if something goes wrong during conversion.
  * 
- * @author Filippo Machi
+ * @version $Id$
  */
 public class ConversionException extends Exception{
 

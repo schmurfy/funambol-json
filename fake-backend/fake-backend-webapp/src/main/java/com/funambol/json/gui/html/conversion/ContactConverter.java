@@ -59,7 +59,7 @@ import org.apache.log4j.Logger;
 /**
  * Converter for contact objects.
  * 
- * @author Filippo Machi
+ * @version $Id$
  */
 public class ContactConverter implements Converter {
 

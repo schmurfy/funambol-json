@@ -1,3 +1,6 @@
+2010-07-08
+- machi: removed @author from class description comment.
+
 2010-07-07
 - lulu: Added SyncSourceUtil.class that contains usefull methods to call in the
         SyncSources.

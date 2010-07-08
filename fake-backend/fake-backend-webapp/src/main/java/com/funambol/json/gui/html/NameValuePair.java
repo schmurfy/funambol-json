@@ -43,7 +43,7 @@ import java.util.List;
  * can be used, for example, to define html tag attributes.
  * 
  * 
- * @author Filippo
+ * @version $Id$
  */
 
 public class NameValuePair {

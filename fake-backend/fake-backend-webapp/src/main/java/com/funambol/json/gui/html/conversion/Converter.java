@@ -39,7 +39,7 @@ import com.funambol.json.gui.html.NameValuePair;
 /**
  * This interface provides method to converting string into different objects.
  * 
- * @author Filippo Machi
+ * @version $Id$
  */
 public interface Converter {
 

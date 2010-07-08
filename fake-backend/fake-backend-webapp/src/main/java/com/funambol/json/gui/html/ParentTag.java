@@ -38,7 +38,7 @@ package com.funambol.json.gui.html;
 /**
  * This Enum specify the way a tag handles its parent.
  * 
- * @author Filippo
+ * @version $Id$
  */
     public enum ParentTag {
         CLOSE,
