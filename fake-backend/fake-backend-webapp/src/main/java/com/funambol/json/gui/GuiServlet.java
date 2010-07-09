@@ -706,7 +706,7 @@ public class GuiServlet extends HttpServlet implements javax.servlet.Servlet {
                 "<LABEL for=\"password\">password: </LABEL><INPUT type=\"password\" name=\"password\"><BR>" +
                 "<INPUT TYPE=CHECKBOX NAME=\"customeruserid\">" +
                 "Return customerid in login requests<br>" +
-                "(useful when customer supports multiple aliases to the same user, <br>" +
+                "(useful when datastore supports multiple aliases to the same user, <br>" +
                 "the connector will create the user in funambol database using the field returned as customeruserid, <br>" +
                 "witch will be send together with the session id if the login is successfull)<BR>" +
                 "<INPUT type=\"submit\" value=\"Send\"></P></FORM>" + "<br>" + message;
