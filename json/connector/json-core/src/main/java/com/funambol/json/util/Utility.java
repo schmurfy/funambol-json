@@ -458,16 +458,18 @@ public class Utility {
      */
     public static int importanceClient2Server(int in) throws NumberFormatException {
         switch (in) {
-            // some nokia phone sends the 0
+            // some nokia phone sends the 0 (undefined)
             case 0:
-
+            // Hi priority
             case 1:
             case 2:
             case 3:
             case 4:
                 return 2;
+            // Middle priority
             case 5:
                 return 1;
+            // Low priority
             case 6:
             case 7:
             case 8:
