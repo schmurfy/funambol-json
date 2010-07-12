@@ -256,9 +256,11 @@ public class JsonDAOImpl implements JsonDAO {
             get.releaseConnection();
         }
 
-        if (log.isTraceEnabled()) {
-            log.trace("JsonDAOImpl: getItem response " + responseBody);
-            log.trace("JsonDAOImpl: getItem with id:" + id + "finished");
+        if (Configuration.getConfiguration().isDebugMode()) {
+            if (log.isTraceEnabled()) {
+                log.trace("JsonDAOImpl: getItem response " + responseBody);
+                log.trace("JsonDAOImpl: getItem with id: " + id + " finished");
+            }
         }
 
         JsonResponse response = new JsonResponse(statusCode, responseBody);
