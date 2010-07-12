@@ -346,14 +346,15 @@ public class AppointmentConverter implements Converter<JsonItem<Event>> {
         
         // temporary patch
         String s = Utility.getJsonValue(jsonItem, JsonAppointmentModel.IMPORTANCE.getValue());
-        int patchedImportance = 0;
-        try {
-            patchedImportance = Utility.importanceServer2Client(Integer.parseInt(s));
-            event.getPriority().setPropertyValue(""+patchedImportance);
-        } catch (Exception e){
-            if(log.isTraceEnabled()){
-                log.trace("Error handling event importance for '" +
-                          subject + "'", e);
+        if (s != null && !s.equals("")) {
+            int patchedImportance = 0;
+            try {
+                patchedImportance = Utility.importanceServer2Client(Integer.parseInt(s));
+                event.getPriority().setPropertyValue(""+patchedImportance);
+            } catch (Exception e){
+                if(log.isTraceEnabled()){
+                    log.trace("Event '" + subject + "'", e);
+                }
             }
         }
 

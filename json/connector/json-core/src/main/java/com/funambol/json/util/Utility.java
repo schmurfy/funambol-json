@@ -519,7 +519,7 @@ public class Utility {
             case 2:
                 return 1;
             default:
-                throw new NumberFormatException(); // will be caught
+                throw new NumberFormatException("Error converting importance " + in); // will be caught
         }
     }
 

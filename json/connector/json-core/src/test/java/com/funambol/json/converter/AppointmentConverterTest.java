@@ -127,6 +127,52 @@ public class AppointmentConverterTest extends TestCase {
     }
 
     /**
+     * Test fromJSON method with a minimal event (added for bug 9688).
+     */
+    public void testFromJSONMinimal() throws Exception{
+        StringBuilder jsonItem = new StringBuilder("{\"data\":{")
+            .append("\"content-type\": \"application/json-appointment\",")
+            .append("\"item\":  {")
+            .append("\"startDate\": \"20100712T210000Z\",")
+            .append("\"endDate\": \"20100712T230000Z\",")
+            .append("\"subject\": \"Restaurant\",")
+            .append("\"body\": \"Dinner with Bob\",")
+            .append("\"location\": \"Milan\",")
+            .append("\"allDay\": false,")
+            .append("\"reminder\": 0,")
+            .append("\"isRecurring\": false}")
+            .append("}}");
+
+        JsonItem<Event> eventRes = converter.fromJSON(jsonItem.toString());
+        Calendar calendar = new Calendar();
+        calendar.setCalendarContent(eventRes.getItem());
+
+        String dtStart = calendar.getCalendarContent().getDtStart().getPropertyValueAsString();
+        String dtEnd = calendar.getCalendarContent().getDtEnd().getPropertyValueAsString();
+
+        assertEquals("20100712T210000Z", dtStart);
+        assertEquals("20100712T230000Z", dtEnd);
+
+//        StringBuilder expectedVcal = new StringBuilder()
+//                .append("BEGIN:VCALENDAR\n")
+//                .append("VERSION:1.0\n")
+//                .append("BEGIN:VEVENT\n")
+//                .append("SUMMARY:Restaurant\n")
+//                .append("DESCRIPTION:Dinner with Bob\n")
+//                .append("LOCATION:Milan\n")
+//                .append("CLASS:PUBLIC\n")
+//                .append("DTSTART:20100712T210000Z\n")
+//                .append("DTEND:20100712T230000Z\n")
+//                .append("X-FUNAMBOL-ALLDAY:0\n")
+//                .append("END:VEVENT\n")
+//                .append("END:VCALENDAR\n");
+//
+//        String result = TestUtility.calendar2webCalendar(calendar, TestUtility.getType(TestUtility.VCAL_FORMAT), null, CHARSET).replaceAll("\\r", "");
+//
+//        assertEquals("vcal differs", result, expectedVcal);
+    }
+    
+    /**
      *
      * @throws java.lang.Exception
      */
