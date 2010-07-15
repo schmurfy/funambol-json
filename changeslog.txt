@@ -1,3 +1,7 @@
+
+---------------------------------
+Funambol JSON Connector 8.7.0
+----------------------------------
 2010-07-08
 - machi: removed @author from class description comment.
 
