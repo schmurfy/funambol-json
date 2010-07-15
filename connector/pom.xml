@@ -4,7 +4,7 @@
     <groupId>funambol</groupId>
     <artifactId>funambol-json</artifactId>
     <name>Funambol JSON Connector package</name>
-    <version>8.7.0</version>
+    <version>8.7.1-SNAPSHOT</version>
     <description>Funambol JSON Connector package</description>
     <packaging>pom</packaging>
 
@@ -21,9 +21,9 @@
     </modules>
 
     <scm>
-        <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/tags/json-8.7.0/connector</connection>
-        <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/tags/json-8.7.0/connector</developerConnection>
-        <url>https://json-connector.forge.funambol.org/svn/json-connector/tags/json-8.7.0/connector</url>
+        <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/connector</connection>
+        <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/connector</developerConnection>
+        <url>https://json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/connector</url>
   </scm>
     
 </project>
