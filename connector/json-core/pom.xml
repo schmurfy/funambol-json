@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>funambol</groupId>
     <artifactId>json-core</artifactId>
-    <version>8.7.0-SNAPSHOT</version>
+    <version>8.7.0</version>
     <name>Funambol JSON core library</name>
     <packaging>jar</packaging>
 
@@ -184,9 +184,9 @@
     </dependencies>
 
     <scm>
-        <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/connector/json-core</connection>
-        <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/connector/json-core</developerConnection>
-        <url>https://json-connector.forge.funambol.org/svn/json-connector/branches/v87/json/connector/json-core</url>
+        <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/tags/json-8.7.0/connector/json-core</connection>
+        <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/tags/json-8.7.0/connector/json-core</developerConnection>
+        <url>https://json-connector.forge.funambol.org/svn/json-connector/tags/json-8.7.0/connector/json-core</url>
     </scm>
 
     <!--
