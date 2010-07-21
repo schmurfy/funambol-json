@@ -56,6 +56,14 @@
     </fileSet>
 
     <fileSet>
+      <directory>../../docs</directory>
+      <outputDirectory>Funambol/docs</outputDirectory>
+      <includes>
+        <include>*.pdf</include>
+      </includes>
+    </fileSet>
+ 
+    <fileSet>
       <directory>src/main/resources</directory>
       <outputDirectory>Funambol</outputDirectory>
       <includes>
