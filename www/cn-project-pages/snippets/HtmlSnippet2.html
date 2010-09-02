@@ -1,4 +1,4 @@
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />                              
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />                                                            
               <!-- Starting JS try --> 
 				<script> 
 				function getFile(url) 
@@ -20,3 +20,18 @@
 				document.getElementById('funambolrss').innerHTML = withoutBegin;
 				</script> 
 				<!-- Ending JS try --> 
+
+
+<script> 
+	String.prototype.startsWith = function(str) {return (this.match("^"+str)==str)};
+	
+	var anchors = document.getElementsByTagName("A");
+	for (var i=0; i < anchors.length; i++)
+		if (anchors[i].href.startsWith("mailto:"))
+			anchors[i].href= anchors[i].href.replace(",", "@").replace("decode\(", "").replace("\)", "");
+			
+         var headerElement = document.getElementById("message-header");
+         headerElement.innerHTML= headerElement.innerHTML.replace(/decode\(([^,]*), ([^,]*)\)/gi, "$1@$2");
+			
+</script> 
+              
