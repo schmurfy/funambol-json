@@ -1,0 +1,22 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />                              
+              <!-- Starting JS try --> 
+				<script> 
+				function getFile(url) 
+				{ 
+				 var ajax= window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP"); 
+				 
+				 if (ajax) 
+				 { 
+				  ajax.open("GET", url, false); 
+				  ajax.send(null); 
+				  return ajax.responseText; 
+				 } 
+				 else 
+				  return false; 
+				} 
+ 
+				var fileContent=getFile('https://json-connector.forge.funambol.org/nonav/.system/rss/json.html');
+				var withoutBegin = fileContent.substring(fileContent.indexOf('<!-- Begin -->',0),fileContent.indexOf('<!-- End -->',0));
+				document.getElementById('funambolrss').innerHTML = withoutBegin;
+				</script> 
+				<!-- Ending JS try --> 
