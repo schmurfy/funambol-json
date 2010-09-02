@@ -9,7 +9,7 @@
       <title localize="false" />
       <filename>HtmlSnippet1.html</filename>
     </component>
-    <component visibility="2" type="Html" order="3">
+    <component visibility="3" type="Html" order="3">
       <title localize="false">downloads</title>
       <filename>HtmlSnippet2.html</filename>
     </component>
