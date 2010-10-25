@@ -5,6 +5,14 @@
     <link>https://json-connector.forge.funambol.org/json.rss</link>
     <description>Downloads</description>
     <item>
+      <title>/json/v87</title>
+      <link>http://sourceforge.net/projects/funambol/files%2Fjson%2Fv87/</link>
+      <description>/json/v87</description>
+      <pubDate>Thu, 29 Jul 2010 18:56:40 GMT</pubDate>
+      <guid isPermaLink="false">http://sourceforge.net/projects/funambol/files%2Fjson%2Fv87/</guid>
+      <dc:date>2010-07-29T18:56:40Z</dc:date>
+    </item>
+    <item>
       <title>/json/v87/funambol-json-src-8.7.0.zip</title>
       <link>http://sourceforge.net/projects/funambol/files%2Fjson%2Fv87%2Ffunambol-json-src-8.7.0.zip/download</link>
       <description>/json/v87/funambol-json-src-8.7.0.zip</description>
@@ -27,14 +35,6 @@
       <pubDate>Tue, 20 Jul 2010 13:00:26 GMT</pubDate>
       <guid isPermaLink="false">http://sourceforge.net/projects/funambol/files%2Fjson%2Fv87%2Frelease-notes-funambol-json-8.7.0.txt/download</guid>
       <dc:date>2010-07-20T13:00:26Z</dc:date>
-    </item>
-    <item>
-      <title>/json/v87</title>
-      <link>http://sourceforge.net/projects/funambol/files%2Fjson%2Fv87/</link>
-      <description>/json/v87</description>
-      <pubDate>Thu, 29 Jul 2010 18:56:40 GMT</pubDate>
-      <guid isPermaLink="false">http://sourceforge.net/projects/funambol/files%2Fjson%2Fv87/</guid>
-      <dc:date>2010-07-29T18:56:40Z</dc:date>
     </item>
   </channel>
 </rss>
