@@ -4,7 +4,7 @@
     <groupId>funambol</groupId>
     <artifactId>json-module</artifactId>
     <name>Funambol JSON Module</name>
-    <version>9.0.0-SNAPSHOT</version>
+    <version>9.0.0</version>
     <description>Funambol JSON Module</description>
     <packaging>pom</packaging>
     
@@ -19,7 +19,7 @@
         <dependency>
             <groupId>funambol</groupId>
             <artifactId>json-connector</artifactId>
-            <version>9.0.0-SNAPSHOT</version>
+            <version>9.0.0</version>
             <type>s4j</type>
         </dependency>     
                      
@@ -68,9 +68,9 @@
     </build>
 
     <scm>
-        <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/trunk/json/connector/json-module</connection>
-        <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/trunk/json/connector/json-module</developerConnection>
-        <url>https://json-connector.forge.funambol.org/svn/json-connector/trunk/json/connector/json-module</url>
+        <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/tags/json-9.0.0/connector/json-module</connection>
+        <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/tags/json-9.0.0/connector/json-module</developerConnection>
+        <url>https://json-connector.forge.funambol.org/svn/json-connector/tags/json-9.0.0/connector/json-module</url>
   </scm>
     
 
