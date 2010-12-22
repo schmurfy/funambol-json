@@ -1,3 +1,7 @@
+--------------------------------------------
+Funambol JSON fake backend demo module 9.0.0
+--------------------------------------------
+
 2010-05-06
 - gasparetto: The fake-backend GUI now set the correct content-type.
               Fixed the delete and delete all commands.
