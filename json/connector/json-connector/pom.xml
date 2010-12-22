@@ -42,7 +42,7 @@
 
     <scm>
         <connection>scm:svn:https://guest@json-connector.forge.funambol.org/svn/json-connector/trunk/json/connector/json-connector</connection>
-        <developerConnection>scm:svn:https://developername@json-connector.forge.funambol.org/svn/json-connector/trunk/json/connector/json-connector</developerConnection>
+        <developerConnection>scm:svn:https://json-connector.forge.funambol.org/svn/json-connector/trunk/json/connector/json-connector</developerConnection>
         <url>https://json-connector.forge.funambol.org/svn/json-connector/trunk/json/connector/json-connector</url>
   </scm>
 
