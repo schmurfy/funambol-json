@@ -149,35 +149,35 @@
         <dependency>
             <groupId>funambol</groupId>
             <artifactId>admin-framework</artifactId>
-            <version>9.0.0-SNAPSHOT</version>
+            <version>9.0.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>funambol</groupId>
             <artifactId>pim-framework</artifactId>
-           <version>9.0.0-SNAPSHOT</version>
+           <version>9.0.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>funambol</groupId>
             <artifactId>core-framework</artifactId>
-            <version>9.0.0-SNAPSHOT</version>
+            <version>9.0.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>funambol</groupId>
             <artifactId>server-framework</artifactId>
-            <version>9.0.0-SNAPSHOT</version>
+            <version>9.0.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>funambol</groupId>
             <artifactId>ds-server</artifactId>
-            <version>9.0.0-SNAPSHOT</version>
+            <version>9.0.0</version>
             <scope>provided</scope>
         </dependency>
 
