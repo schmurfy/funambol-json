@@ -1,3 +1,6 @@
+2011-04-21
+- luigia: Updated artifacts version to v10.0.0-SNAPSHOTS
+
 --------------------------------------------
 Funambol JSON fake backend demo module 9.0.0
 --------------------------------------------

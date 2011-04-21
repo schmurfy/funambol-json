@@ -1,7 +1,12 @@
+2011-04-21
+- luigia: Updated artifacts version to v10.0.0-SNAPSHOTS
 
+--------------------------------------------
+Funambol JSON Connector 9.0.0
+--------------------------------------------
 2010-07-28
--smaffulli: removed the pdf version of the odt dev guide since it is already in release
-tag
+-smaffulli: removed the pdf version of the odt dev guide since it is already in
+            release tag
 
 2010-07-28
 -smaffulli: added the pdf version of the odt dev guide
