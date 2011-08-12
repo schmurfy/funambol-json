@@ -5,7 +5,7 @@
     <link>https://json-connector.forge.funambol.org/jsonyahoo.rss</link>
     <description>Latest Releases</description>
     <item>
-      <title>json/v87/release-notes-funambol-json-8.7.0.txt</title>
+      <title>release-notes-funambol-json-8.7.0.txt</title>
       <link>http://sourceforge.net/projects/funambol/files%2Fjson%2Fv87%2Frelease-notes-funambol-json-8.7.0.txt/download</link>
       <description>/json/v87/release-notes-funambol-json-8.7.0.txt</description>
       <pubDate>Tue, 20 Jul 2010 13:00:26 GMT</pubDate>
@@ -13,7 +13,7 @@
       <dc:date>2010-07-20T13:00:26Z</dc:date>
     </item>
     <item>
-      <title>json/v87/funambol-json-module-8.7.0.zip</title>
+      <title>funambol-json-module-8.7.0.zip</title>
       <link>http://sourceforge.net/projects/funambol/files%2Fjson%2Fv87%2Ffunambol-json-module-8.7.0.zip/download</link>
       <description>/json/v87/funambol-json-module-8.7.0.zip</description>
       <pubDate>Wed, 21 Jul 2010 14:51:42 GMT</pubDate>
@@ -21,7 +21,7 @@
       <dc:date>2010-07-21T14:51:42Z</dc:date>
     </item>
     <item>
-      <title>json/v87/funambol-json-src-8.7.0.zip</title>
+      <title>funambol-json-src-8.7.0.zip</title>
       <link>http://sourceforge.net/projects/funambol/files%2Fjson%2Fv87%2Ffunambol-json-src-8.7.0.zip/download</link>
       <description>/json/v87/funambol-json-src-8.7.0.zip</description>
       <pubDate>Wed, 28 Jul 2010 11:06:07 GMT</pubDate>
