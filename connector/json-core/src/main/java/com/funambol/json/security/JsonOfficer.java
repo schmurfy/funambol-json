@@ -695,9 +695,20 @@ public class JsonOfficer extends AbstractOfficer
 
         try {
 
+            Sync4jDevice device = null;
+            
+            try {
+              device = getDevice(deviceId, true);
+            }
+            catch(DeviceInventoryException e) {
+              log.error("Unable to find user's device: " + deviceId, e);
+              return null;
+            }
+            
             JsonAuthRequest authRequest = new JsonAuthRequest();
             authRequest.setUser(username);
             authRequest.setPass(password);
+            authRequest.setDevice(device);
             
             // authenticate the user in the backend server
             JsonAuthResponse authResponse = authenticate(authRequest);
@@ -790,7 +801,6 @@ public class JsonOfficer extends AbstractOfficer
                         }
 
                         // update the notification method for the given device
-                        Sync4jDevice device = getDevice(deviceId);
                         String notificationSender = getNotificationSender(device);
                         String notificationBuilder = getNotificationBuilder(device);
 
@@ -883,9 +893,19 @@ public class JsonOfficer extends AbstractOfficer
      * @throws com.funambol.framework.server.inventory.DeviceInventoryException
      */
     private Sync4jDevice getDevice(String deviceId) throws DeviceInventoryException {
+        return getDevice(deviceId, false);
+    }
+    
+    /**
+     *
+     * @param deviceId
+     * @return
+     * @throws com.funambol.framework.server.inventory.DeviceInventoryException
+     */
+    private Sync4jDevice getDevice(String deviceId, Boolean with_caps) throws DeviceInventoryException {
         DeviceInventory devInventory = Configuration.getConfiguration().getDeviceInventory();
         Sync4jDevice device = new Sync4jDevice(deviceId);
-        devInventory.getDevice(device);
+        devInventory.getDevice(device, with_caps);
         return device;
     }
 

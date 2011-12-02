@@ -34,6 +34,8 @@
  */
 package com.funambol.json.domain;
 
+import com.funambol.framework.server.Sync4jDevice;
+
 /**
  * Authentication request
  *
@@ -43,9 +45,19 @@ public class JsonAuthRequest {
 	private String user;
 	
 	private String pass;
+	
+	private Sync4jDevice device;
 
 	public String getUser() {
 		return user;
+	}
+	
+	public void setDevice(Sync4jDevice device) {
+	  this.device = device;
+	}
+	
+	public Sync4jDevice getDevice() {
+	  return this.device;
 	}
 
 	public void setUser(String user) {
