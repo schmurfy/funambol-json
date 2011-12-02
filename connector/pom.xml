@@ -7,6 +7,11 @@
     <version>8.7.1-SNAPSHOT</version>
     <description>Funambol JSON Connector package</description>
     <packaging>pom</packaging>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
 
      <parent>
         <groupId>funambol</groupId>
