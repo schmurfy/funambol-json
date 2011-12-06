@@ -742,7 +742,7 @@ public class JsonOfficer extends AbstractOfficer
 
             } else {
 
-                user = new JsonUser(username, password, credentialType);
+                user = new JsonUser(username, "", credentialType);
 
                 user.setSessionID(token);
 
