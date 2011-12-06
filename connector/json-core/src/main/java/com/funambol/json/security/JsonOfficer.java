@@ -751,7 +751,7 @@ public class JsonOfficer extends AbstractOfficer
                 }
 
                 // Inserts the user in funambol table if it doesn't exist
-                if (autoProvisioning){
+                if (true){
                     //
                     // Inserts the user in funambol table if it doesn't exist
                     // the User Provisioning is performed by this Officer and 
