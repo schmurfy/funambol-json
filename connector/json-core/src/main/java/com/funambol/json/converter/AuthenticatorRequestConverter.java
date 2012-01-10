@@ -40,6 +40,7 @@ import com.funambol.json.domain.JsonAuthRequest;
 import com.funambol.json.domain.JsonAuthRequestModel;
 import com.funambol.json.domain.JsonItem;
 import com.funambol.framework.server.Sync4jDevice;
+import com.funambol.framework.server.Capabilities;
 import com.funambol.framework.core.DevInf;
 import com.funambol.framework.logging.FunambolLogger;
 import com.funambol.framework.logging.FunambolLoggerFactory;
@@ -71,18 +72,24 @@ public class AuthenticatorRequestConverter implements Converter<JsonAuthRequest>
         jsonCredetials.element(JsonAuthRequestModel.PASS.getValue(), jsonAuthRequest.getPass());
         jsonData.element(JsonAuthRequestModel.CREDENTIAL.getValue(), jsonCredetials);
         
-        if( jsonAuthRequest.getDevice() != null ){
-          Sync4jDevice device = jsonAuthRequest.getDevice();
-          DevInf infos = device.getCapabilities().getDevInf();
+        
+        Sync4jDevice device = jsonAuthRequest.getDevice();
+        
+        if( device != null ){
           JSONObject jsonDevice = new JSONObject();
-          
           jsonDevice.element("id", device.getDeviceId());
-          jsonDevice.element("type", infos.getMod());
-          jsonDevice.element("swv", infos.getSwV());
           
-          jsonRoot.element("device", jsonDevice);
+          Capabilities caps = device.getCapabilities();
+          if( caps != null ){
+            DevInf infos = caps.getDevInf();
+
+            jsonDevice.element("type", infos.getMod());
+            jsonDevice.element("swv", infos.getSwV());            
+          }
+          
+          jsonData.element("device", jsonDevice);
         }
-        jsonRoot.element(JsonAuthRequestModel.DATA.getValue(), jsonData);
+        jsonRoot.element("data", jsonData);
         
         return jsonRoot.toString();
     }
